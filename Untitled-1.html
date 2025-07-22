@@ -1,0 +1,1788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Indoor Plants - Ray</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for social icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Custom styles for the Volkhov font */
+        body {
+            font-family: 'Volkhov', serif; /* Changed font to Volkhov */
+        }
+        /* Hide scrollbar for a cleaner look */
+        body::-webkit-scrollbar {
+            display: none;
+        }
+        body {
+            -ms-overflow-style: none; /* IE and Edge */
+            scrollbar-width: none; /* Firefox */
+        }
+        /* Custom card width for more items per row on large screens */
+        @media (min-width: 1280px) { /* xl breakpoint */
+            .products .card, .products-grid .card {
+                width: calc(20% - 1.25rem); /* 5 cards per row with gap */
+            }
+        }
+        @media (min-width: 1024px) and (max-width: 1279px) { /* lg breakpoint */
+            .products .card, .products-grid .card {
+                width: calc(25% - 1rem); /* 4 cards per row with gap */
+            }
+        }
+        @media (min-width: 768px) and (max-width: 1023px) { /* md breakpoint */
+            .products .card, .products-grid .card {
+                width: calc(33.33% - 1rem); /* 3 cards per row with gap */
+            }
+        }
+        @media (min-width: 640px) and (max-width: 767px) { /* sm breakpoint */
+            .products .card, .products-grid .card {
+                width: calc(50% - 0.75rem); /* 2 cards per row with gap */
+            }
+        }
+        @media (max-width: 639px) { /* xs breakpoint */
+            .products .card, .products-grid .card {
+                width: calc(50% - 0.75rem); /* 2 cards per row with gap */
+            }
+        }
+
+        /* Small plant category items - kept for consistency, though not directly used for XL */
+        .small-plant-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 8px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            transition: transform 0.2s ease-in-out;
+        }
+        .small-plant-item:hover {
+            transform: translateY(-3px);
+        }
+        .small-plant-item img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 8px;
+            border: 2px solid #4f872d;
+        }
+
+        /* Styling for images within category chips */
+        .categories .chip img {
+            width: 32px; /* Small size for the icon */
+            height: 32px;
+            border-radius: 50%; /* Make it circular */
+            object-fit: cover;
+            margin-right: 6px; /* Space between image and text */
+            border: 1px solid rgba(0,0,0,0.1); /* Subtle border */
+        }
+        .categories .chip.active img {
+            border-color: white; /* White border for active chip */
+        }
+
+        /* Timer specific styling */
+        .timer-box {
+            background-color: #D4EDDA; /* Light green background */
+            padding: 8px 12px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #3A6B1E; /* Dark green text */
+            min-width: 60px; /* Ensure consistent width */
+        }
+        .timer-value {
+            font-size: 1.5rem; /* Larger font for numbers */
+            line-height: 1;
+        }
+        .timer-label {
+            font-size: 0.75rem; /* Smaller font for labels */
+            text-transform: uppercase;
+            margin-top: 4px;
+        }
+
+        /* Track Order specific styling */
+        .track-order-container {
+            max-width: 500px;
+            margin: 4rem auto;
+            padding: 2rem;
+            background-color: #fff;
+            border-radius: 1rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .track-order-toggle-button {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            border: 2px solid #4f872d;
+            color: #4f872d;
+            background-color: white;
+        }
+        .track-order-toggle-button.active {
+            background-color: #4f872d;
+            color: white;
+        }
+
+        /* Shopping Cart Page Styling */
+        .shopping-cart-page {
+            max-width: 800px; /* Max width for the cart page content */
+            margin: 2rem auto; /* Center the content */
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+        }
+
+        /* Payment page styling */
+        .payment-option-btn {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            border: 2px solid #D4EDDA;
+            background-color: #D4EDDA;
+            color: #3A6B1E;
+            font-weight: 600;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+        }
+        .payment-option-btn:hover {
+            background-color: #C1E0C1;
+            border-color: #3A6B1E;
+        }
+        .payment-option-btn.active {
+            border-color: #4f872d;
+            background-color: #E6F3E6;
+        }
+        .payment-option-btn img {
+            height: 24px; /* Adjust as needed for icon size */
+            margin-right: 8px;
+        }
+
+        /* Product Detail Section Styling (within home-page-content) */
+        .product-detail-section {
+            max-width: 900px;
+            margin: 2rem auto;
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+        }
+        .product-detail-thumbnail {
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: border-color 0.2s;
+        }
+        .product-detail-thumbnail.active {
+            border-color: #4f872d;
+        }
+
+        /* About Us Page Styling */
+        .about-us-page {
+            background-color: #2F4F4F; /* Dark green background */
+            color: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            margin: 2rem auto;
+            max-width: 1000px;
+        }
+        .about-us-page h2 {
+            font-weight: bold;
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: white;
+        }
+        .about-us-page p {
+            font-size: 1.125rem;
+            line-height: 1.75;
+            margin-bottom: 1rem;
+        }
+        .about-us-section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #D4EDDA; /* Light green for titles */
+        }
+        .about-us-card {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        .about-us-card img {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            margin: 0 auto 1rem;
+        }
+    </style>
+    <!-- Volkhov Font from Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Volkhov:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- Header Section -->
+    <header class="bg-[#4f872d] text-white p-4 flex flex-col md:flex-row items-center justify-between gap-4 rounded-b-lg shadow-md md:flex-nowrap">
+        <div class="flex items-center gap-4 w-full md:w-auto justify-between">
+            <div class="text-2xl font-bold flex items-center gap-2">
+                <span class="text-3xl">🌿</span> Ray
+            </div>
+            <div class="md:hidden">
+                <!-- Mobile Menu Button - You can add functionality here -->
+                <button class="text-white focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                </button>
+            </div>
+        </div>
+        <!-- Adjusted search-container to flex-grow on md, and added max-w for control -->
+        <div class="search-container flex w-full md:flex-grow md:max-w-sm justify-center">
+            <input type="text" placeholder="Search" class="p-2 rounded-full border-none w-full text-gray-800 focus:ring-2 focus:ring-green-300 transition-all duration-300" />
+        </div>
+        <!-- Adjusted nav to also flex-grow on md, allowing justify-end to work across that width -->
+        <nav class="flex flex-wrap justify-center md:flex-grow md:justify-end gap-3 md:gap-5 mt-4 md:mt-0">
+            <a href="#" class="nav-link text-white hover:text-green-200 font-semibold transition-colors duration-300 rounded-md px-3 py-1" data-page="home">Home</a>
+            <a href="#" class="nav-link text-white hover:text-green-200 font-semibold transition-colors duration-300 rounded-md px-3 py-1" data-page="best-seller">Best Seller</a>
+            <a href="#" class="nav-link text-white hover:text-green-200 font-semibold transition-colors duration-300 rounded-md px-3 py-1" data-page="deal-of-day">Deal Of the Day</a>
+            <a href="#" class="nav-link text-white hover:text-green-200 font-semibold transition-colors duration-300 rounded-md px-3 py-1" data-page="track-order">Track Your Order</a>
+            <a href="#" class="nav-link text-white hover:text-green-200 font-semibold transition-colors duration-300 rounded-md px-3 py-1" data-page="about-us">About Us</a>
+            <a href="#footer-contact" class="text-white hover:text-green-200 font-semibold transition-colors duration-300 rounded-md px-3 py-1">Contact</a>
+            <!-- Shopping Cart Icon -->
+            <button id="cart-icon" class="text-white hover:text-green-200 font-semibold transition-colors duration-300 rounded-md px-3 py-1 flex items-center">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                <span id="cart-count" class="ml-1 text-sm bg-red-500 rounded-full px-2 py-0.5 hidden">0</span>
+            </button>
+        </nav>
+    </header>
+
+    <!-- Home Page Content Section -->
+    <div id="home-page-content">
+        <!-- Hero Section -->
+        <section class="hero text-center bg-[#f0f5ec] p-8 md:p-12 mt-4 rounded-xl mx-4 shadow-lg">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6">Indoor Plants</h1>
+            <img src="images/Screenshot 2025-07-17 234816.png" alt="Indoor Plants Banner" class="w-full h-48 md:h-96 object-cover rounded-xl shadow-md mx-auto" />
+        </section>
+
+        <!-- Categories Section -->
+        <section class="categories flex flex-wrap justify-center gap-3 md:gap-4 my-8 mx-4">
+            <!-- Added 'Show All' chip -->
+            <div class="chip bg-[#4f872d] text-white px-4 py-2 rounded-full flex items-center gap-2 text-sm md:text-base cursor-pointer shadow-md" data-category="all">
+                ✨ Show All
+            </div>
+            <div class="chip bg-gray-200 text-gray-700 px-4 py-2 rounded-full flex items-center gap-2 text-sm md:text-base cursor-pointer hover:bg-gray-300 transition-colors duration-200 shadow-sm" data-category="xl-indoor">
+                <img src="images/thuja md.jpg" alt="XL Indoor Icon"> 🌱 XL Indoor
+            </div>
+            <div class="chip bg-gray-200 text-gray-700 px-4 py-2 rounded-full flex items-center gap-2 text-sm md:text-base cursor-pointer hover:bg-gray-300 transition-colors duration-200 shadow-sm" data-category="large-indoor">
+                <img src="images/philiyodendro pl.webp" alt="Large Indoor Icon"> 🌿 Large Indoor
+            </div>
+            <div class="chip bg-gray-200 text-gray-700 px-4 py-2 rounded-full flex items-center gap-2 text-sm md:text-base cursor-pointer hover:bg-gray-300 transition-colors duration-200 shadow-sm" data-category="medium-indoor">
+                <img src="images/Croton md.webp" alt="Medium Indoor Icon"> 🪴 Medium Indoor
+            </div>
+            <div class="chip bg-gray-200 text-gray-700 px-4 py-2 rounded-full flex items-center gap-2 text-sm md:text-base cursor-pointer hover:bg-gray-300 transition-colors duration-200 shadow-sm" data-category="small-indoor">
+                <img src="Frame 216.png" alt="Small Indoor Icon"> 🍀 Small Indoor
+            </div>
+            <div class="chip bg-gray-200 text-gray-700 px-4 py-2 rounded-full flex items-center gap-2 text-sm md:text-base cursor-pointer hover:bg-gray-300 transition-colors duration-200 shadow-sm" data-category="plant-food">
+                <img src="images/cowdung.jpg" alt="Plant Food Icon"> 🧃 Plant Food
+            </div>
+            <div class="chip bg-gray-200 text-gray-700 px-4 py-2 rounded-full flex items-center gap-2 text-sm md:text-base cursor-pointer hover:bg-gray-300 transition-colors duration-200 shadow-sm" data-category="plant-care">
+                <img src="images/philiyodendro pl.webp" alt="Plant Care Icon"> 🧼 Plant Care
+            </div>
+        </section>
+
+        <!-- Filters Section -->
+        <section class="filters flex flex-wrap justify-center gap-3 md:gap-4 my-8 mx-4">
+            <select id="price-filter" class="p-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-300 transition-all duration-300 shadow-sm">
+                <option value="all">Price</option>
+                <option value="0-500">Rs.0 - Rs.500</option>
+                <option value="501-1000">Rs.501 - Rs.1000</option>
+                <option value="1001-2000">Rs.1001 - Rs.2000</option>
+            </select>
+            <select id="size-filter" class="p-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-300 transition-all duration-300 shadow-sm">
+                <option value="all">Size</option>
+                <option value="small">Small</option>
+                <option value="medium">Medium</option>
+                <option value="large">Large</option>
+                <option value="xl">XL</option>
+            </select>
+            <select id="sun-light-filter" class="p-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-300 transition-all duration-300 shadow-sm">
+                <option value="all">Sun Light</option>
+                <option value="low-light">Low Light</option>
+                <option value="medium-light">Medium Light</option>
+                <option value="bright-indirect">Bright Indirect</option>
+                <option value="direct-sun">Direct Sun</option>
+            </select>
+            <select id="water-level-filter" class="p-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-300 transition-all duration-300 shadow-sm">
+                <option value="all">Water Level</option>
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+            </select>
+        </section>
+
+        <!-- Products Section (All Products) -->
+        <section class="products flex flex-wrap justify-center gap-4 md:gap-6 p-4 md:p-6" id="product-list">
+            <!-- XL Indoor Plants -->
+            <div class="card bg-white border border-gray-200 rounded-xl p-3 text-center shadow-md hover:shadow-lg transition-shadow duration-300" data-category="xl-indoor" data-price-value="540" data-size="medium" data-sun-light="bright-indirect" data-water-level="medium"
+                 data-product-name="Lucky Bamboo Plant with Self Watering Plant" data-img="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Lucky+Bamboo" data-full-price="540" data-description="Lucky bamboo attracts positive energy and good luck. If you are looking for good fortune and beauty, consider adding a lucky bamboo to the interior of your home. Bamboo's life span varies greatly depending on the species, care, treatment, and environmental conditions, but generally ranges from about 1 to 6 years indoors, 0.5-4 years when in ground. Some can live more than 0.5 years in ground. Most bamboos, with a few exceptions, prefer to grow in full sun"
+                 data-thumbnail-1="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Lucky+Bamboo+1"
+                 data-thumbnail-2="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Lucky+Bamboo+2"
+                 data-thumbnail-3="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Lucky+Bamboo+3">
+                <img src="images/zamiya.webp" alt="Lucky Bamboo Plant" class="w-full h-36 object-cover rounded-lg mb-3">
+                <p class="rating text-orange-400 text-sm mb-1">⭐ 4.5</p>
+                <h3 class="font-semibold text-lg text-gray-900 mb-1">Lucky Bamboo</h3>
+                <p class="text-gray-700 text-base mb-3">Rs.540</p>
+                <button class="view-product-btn bg-[#4f872d] hover:bg-[#3a6b1e] text-white px-4 py-2 rounded-lg font-medium transition-colors duration-300 w-full shadow-sm">View Product</button>
+            </div>
+            <div class="card bg-white border border-gray-200 rounded-xl p-3 text-center shadow-md hover:shadow-lg transition-shadow duration-300" data-category="xl-indoor" data-price-value="720" data-size="large" data-sun-light="medium-light" data-water-level="low"
+                 data-product-name="Aglanema Red Plant" data-img="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Aglanema+Red" data-full-price="720" data-description="The Aglaonema Red is a vibrant and easy-to-care-for indoor plant, known for its striking red and green foliage. It thrives in low to medium light and adds a pop of color to any room."
+                 data-thumbnail-1="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Aglanema+Red+1"
+                 data-thumbnail-2="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Aglanema+Red+2"
+                 data-thumbnail-3="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Aglanema+Red+3">
+                <img src="images/aglonima.webp" alt="Aglanema Red Plant" class="w-full h-36 object-cover rounded-lg mb-3">
+                <p class="rating text-orange-400 text-sm mb-1">⭐ 4.7</p>
+                <h3 class="font-semibold text-lg text-gray-900 mb-1">Aglanema Red</h3>
+                <p class="text-gray-700 text-base mb-3">Rs.720</p>
+                <button class="view-product-btn bg-[#4f872d] hover:bg-[#3a6b1e] text-white px-4 py-2 rounded-lg font-medium transition-colors duration-300 w-full shadow-sm">View Product</button>
+            </div>
+            <div class="card bg-white border border-gray-200 rounded-xl p-3 text-center shadow-md hover:shadow-lg transition-shadow duration-300" data-category="xl-indoor" data-price-value="680" data-size="large" data-sun-light="low-light" data-water-level="medium"
+                 data-product-name="Rhapso Plant" data-img="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Rhapso+Plant" data-full-price="680" data-description="The Rhapso Plant, also known as Rhapis excelsa or Lady Palm, is a popular choice for indoor spaces due to its elegant appearance and air-purifying qualities. It prefers indirect light and consistent moisture."
+                 data-thumbnail-1="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Rhapso+Plant+1"
+                 data-thumbnail-2="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Rhapso+Plant+2"
+                 data-thumbnail-3="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Rhapso+Plant+3">
+                <img src="images/philiyodendro pl.webp" alt="Rhapso Plant" class="w-full h-36 object-cover rounded-lg mb-3">
+                <p class="rating text-orange-400 text-sm mb-1">⭐ 4.6</p>
+                <h3 class="font-semibold text-lg text-gray-900 mb-1">Rhapso Plant</h3>
+                <p class="text-gray-700 text-base mb-3">Rs.680</p>
+                <button class="view-product-btn bg-[#4f872d] hover:bg-[#3a6b1e] text-white px-4 py-2 rounded-lg font-medium transition-colors duration-300 w-full shadow-sm">View Product</button>
+            </div>
+            <div class="card bg-white border border-gray-200 rounded-xl p-3 text-center shadow-md hover:shadow-lg transition-shadow duration-300" data-category="xl-indoor" data-price-value="510" data-size="medium" data-sun-light="bright-indirect" data-water-level="medium"
+                 data-product-name="Philodendron Plant" data-img="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Philodendron" data-full-price="510" data-description="Philodendrons are a diverse group of beautiful and adaptable plants, perfect for beginners. They come in various leaf shapes and sizes, and generally prefer bright, indirect light and well-draining soil."
+                 data-thumbnail-1="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Philodendron+1"
+                 data-thumbnail-2="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Philodendron+2"
+                 data-thumbnail-3="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Philodendron+3">
+                <img src="images/Syngo pl.webp" alt="Philodendron Plant" class="w-full h-36 object-cover rounded-lg mb-3">
+                <p class="rating text-orange-400 text-sm mb-1">⭐ 4.3</p>
+                <h3 class="font-semibold text-lg text-gray-900 mb-1">Philodendron</h3>
+                <p class="text-gray-700 text-base mb-3">Rs.510</p>
+                <button class="view-product-btn bg-[#4f872d] hover:bg-[#3a6b1e] text-white px-4 py-2 rounded-lg font-medium transition-colors duration-300 w-full shadow-sm">View Product</button>
+            </div>
+            <div class="card bg-white border border-gray-200 rounded-xl p-3 text-center shadow-md hover:shadow-lg transition-shadow duration-300" data-category="xl-indoor" data-price-value="1100" data-size="xl" data-sun-light="medium-light" data-water-level="high"
+                 data-product-name="Aralia Plant" data-img="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Aralia+Plant" data-full-price="1100" data-description="Aralia plants are known for their striking foliage and can add a tropical touch to your indoor space. They prefer bright, indirect light and consistently moist soil."
+                 data-thumbnail-1="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Aralia+Plant+1"
+                 data-thumbnail-2="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Aralia+Plant+2"
+                 data-thumbnail-3="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Aralia+Plant+3">
+                <img src="images/Aralia pl.webp" alt="Aralia Plant" class="w-full h-36 object-cover rounded-lg mb-3">
+                <p class="rating text-orange-400 text-sm mb-1">⭐ 4.9</p>
+                <h3 class="font-semibold text-lg text-gray-900 mb-1">Aralia Plant</h3>
+                <p class="text-gray-700 text-base mb-3">Rs.1100</p>
+                <button class="view-product-btn bg-[#4f872d] hover:bg-[#3a6b1e] text-white px-4 py-2 rounded-lg font-medium transition-colors duration-300 w-full shadow-sm">View Product</button>
+            </div>
+
+            <!-- Large Indoor Plants -->
+            <div class="card bg-white border border-gray-200 rounded-xl p-3 text-center shadow-md hover:shadow-lg transition-shadow duration-300" data-category="large-indoor" data-price-value="1800" data-size="xl" data-sun-light="bright-indirect" data-water-level="medium"
+                 data-product-name="Ficus Lyrata Plant" data-img="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Ficus+Lyrata" data-full-price="1800" data-description="The Ficus Lyrata, or Fiddle Leaf Fig, is a stunning plant with large, violin-shaped leaves. It requires bright, indirect light and consistent watering to thrive."
+                 data-thumbnail-1="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Ficus+Lyrata+1"
+                 data-thumbnail-2="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Ficus+Lyrata+2"
+                 data-thumbnail-3="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Ficus+Lyrata+3">
+                <img src="images/Fidal fig pl.webp" alt="Ficus Lyrata Plant" class="w-full h-36 object-cover rounded-lg mb-3">
+                <p class="rating text-orange-400 text-sm mb-1">⭐ 4.9</p>
+                <h3 class="font-semibold text-lg text-gray-900 mb-1">Ficus Lyrata</h3>
+                <p class="text-gray-700 text-base mb-3">Rs.1800</p>
+                <button class="view-product-btn bg-[#4f872d] hover:bg-[#3a6b1e] text-white px-4 py-2 rounded-lg font-medium transition-colors duration-300 w-full shadow-sm">View Product</button>
+            </div>
+            <div class="card bg-white border border-gray-200 rounded-xl p-3 text-center shadow-md hover:shadow-lg transition-shadow duration-300" data-category="large-indoor" data-price-value="890" data-size="large" data-sun-light="medium-light" data-water-level="high"
+                 data-product-name="Areca Palm" data-img="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Areca+Palm" data-full-price="890" data-description="The Areca Palm is a beautiful and popular indoor plant known for its air-purifying qualities. It adds a tropical feel to any space and thrives in bright, indirect light with regular watering."
+                 data-thumbnail-1="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Areca+Palm+1"
+                 data-thumbnail-2="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Areca+Palm+2"
+                 data-thumbnail-3="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Areca+Palm+3">
+                <img src="images/Areca md.jpg" alt="Areca Palm" class="w-full h-36 object-cover rounded-lg mb-3">
+                <p class="rating text-orange-400 text-sm mb-1">⭐ 4.8</p>
+                <h3 class="font-semibold text-lg text-gray-900 mb-1">Areca Palm</h3>
+                <p class="text-gray-700 text-base mb-3">Rs.890</p>
+                <button class="view-product-btn bg-[#4f872d] hover:bg-[#3a6b1e] text-white px-4 py-2 rounded-lg font-medium transition-colors duration-300 w-full shadow-sm">View Product</button>
+            </div>
+            <div class="card bg-white border border-gray-200 rounded-xl p-3 text-center shadow-md hover:shadow-lg transition-shadow duration-300" data-category="large-indoor" data-price-value="1200" data-size="large" data-sun-light="bright-indirect" data-water-level="medium"
+                 data-product-name="Monstera Plant" data-img="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Monstera" data-full-price="1200" data-description="The Monstera Deliciosa, or Swiss Cheese Plant, is famous for its unique fenestrated leaves. It's a statement plant that thrives in bright, indirect light and high humidity."
+                 data-thumbnail-1="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Monstera+1"
+                 data-thumbnail-2="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Monstera+2"
+                 data-thumbnail-3="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Monstera+3">
+                <img src="images/water meter.jpg" alt="Monstera Plant" class="w-full h-36 object-cover rounded-lg mb-3">
+                <p class="rating text-orange-400 text-sm mb-1">⭐ 4.9</p>
+                <h3 class="font-semibold text-lg text-gray-900 mb-1">Monstera</h3>
+                <p class="text-gray-700 text-base mb-3">Rs.1200</p>
+                <button class="view-product-btn bg-[#4f872d] hover:bg-[#3a6b1e] text-white px-4 py-2 rounded-lg font-medium transition-colors duration-300 w-full shadow-sm">View Product</button>
+            </div>
+            <div class="card bg-white border border-gray-200 rounded-xl p-3 text-center shadow-md hover:shadow-lg transition-shadow duration-300" data-category="large-indoor" data-price-value="1500" data-size="xl" data-sun-light="bright-indirect" data-water-level="high"
+                 data-product-name="Bird of Paradise Plant" data-img="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Bird+of+Paradise" data-full-price="1500" data-description="The Bird of Paradise plant is a tropical beauty with large, banana-like leaves and stunning, crane-like flowers (though indoor plants rarely bloom). It needs bright light and consistent moisture."
+                 data-thumbnail-1="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Bird+of+Paradise+1"
+                 data-thumbnail-2="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Bird+of+Paradise+2"
+                 data-thumbnail-3="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Bird+of+Paradise+3">
+                <img src="images/bansai.webp" alt="Bird of Paradise Plant" class="w-full h-36 object-cover rounded-lg mb-3">
+                <p class="rating text-orange-400 text-sm mb-1">⭐ 4.9</p>
+                <h3 class="font-semibold text-lg text-gray-900 mb-1">Bird of Paradise</h3>
+                <p class="text-gray-700 text-base mb-3">Rs.1500</p>
+                <button class="view-product-btn bg-[#4f872d] hover:bg-[#3a6b1e] text-white px-4 py-2 rounded-lg font-medium transition-colors duration-300 w-full shadow-sm">View Product</button>
+            </div>
+            <div class="card bg-white border border-gray-200 rounded-xl p-3 text-center shadow-md hover:shadow-lg transition-shadow duration-300" data-category="large-indoor" data-price-value="780" data-size="large" data-sun-light="medium-light" data-water-level="medium"
+                 data-product-name="Rubber Plant" data-img="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Rubber+Plant" data-full-price="780" data-description="The Rubber Plant (Ficus elastica) is a classic indoor plant with large, glossy leaves. It's relatively low-maintenance and can tolerate a range of light conditions, though it prefers bright, indirect light."
+                 data-thumbnail-1="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Rubber+Plant+1"
+                 data-thumbnail-2="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Rubber+Plant+2"
+                 data-thumbnail-3="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Rubber+Plant+3">
+                <img src="images/rhio.webp" alt="Rubber Plant" class="w-full h-36 object-cover rounded-lg mb-3">
+                <p class="rating text-orange-400 text-sm mb-1">⭐ 4.7</p>
+                <h3 class="font-semibold text-lg text-gray-900 mb-1">Rubber Plant</h3>
+                <p class="text-gray-700 text-base mb-3">Rs.780</p>
+                <button class="view-product-btn bg-[#4f872d] hover:bg-[#3a6b1e] text-white px-4 py-2 rounded-lg font-medium transition-colors duration-300 w-full shadow-sm">View Product</button>
+            </div>
+
+            <!-- Medium Indoor Plants -->
+            <div class="card bg-white border border-gray-200 rounded-xl p-3 text-center shadow-md hover:shadow-lg transition-shadow duration-300" data-category="medium-indoor" data-price-value="480" data-size="medium" data-sun-light="low-light" data-water-level="high"
+                 data-product-name="Peace Lily Plant" data-img="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Peace+Lily" data-full-price="480" data-description="The Peace Lily is a beautiful and popular houseplant known for its elegant white 'flowers' (modified leaves) and air-purifying abilities. It thrives in low to medium light and prefers consistently moist soil."
+                 data-thumbnail-1="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Peace+Lily+1"
+                 data-thumbnail-2="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Peace+Lily+2"
+                 data-thumbnail-3="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Peace+Lily+3">
+                <img src="images/philiyodendro pl.webp" alt="Peace Lily Plant" class="w-full h-36 object-cover rounded-lg mb-3">
+                <p class="rating text-orange-400 text-sm mb-1">⭐ 4.3</p>
+                <h3 class="font-semibold text-lg text-gray-900 mb-1">Peace Lily</h3>
+                <p class="text-gray-700 text-base mb-3">Rs.480</p>
+                <button class="view-product-btn bg-[#4f872d] hover:bg-[#3a6b1e] text-white px-4 py-2 rounded-lg font-medium transition-colors duration-300 w-full shadow-sm">View Product</button>
+            </div>
+            <div class="card bg-white border border-gray-200 rounded-xl p-3 text-center shadow-md hover:shadow-lg transition-shadow duration-300" data-category="medium-indoor" data-price-value="680" data-size="medium" data-sun-light="low-light" data-water-level="low"
+                 data-product-name="ZZ Plant" data-img="https://placehold.co/150x150/EBF4EF/3A6B1E?text=ZZ+Plant" data-full-price="680" data-description="The ZZ Plant (Zamioculcas zamiifolia) is incredibly resilient and perfect for beginners or those with busy lifestyles. It tolerates low light and infrequent watering, making it very low maintenance."
+                 data-thumbnail-1="https://placehold.co/150x150/EBF4EF/3A6B1E?text=ZZ+Plant+1"
+                 data-thumbnail-2="https://placehold.co/150x150/EBF4EF/3A6B1E?text=ZZ+Plant+2"
+                 data-thumbnail-3="https://placehold.co/150x150/EBF4EF/3A6B1E?text=ZZ+Plant+3">
+                <img src="images/zz md.jpg" alt="ZZ Plant" class="w-full h-36 object-cover rounded-lg mb-3">
+                <p class="rating text-orange-400 text-sm mb-1">⭐ 4.6</p>
+                <h3 class="font-semibold text-lg text-gray-900 mb-1">ZZ Plant</h3>
+                <p class="text-gray-700 text-base mb-3">Rs.680</p>
+                <button class="view-product-btn bg-[#4f872d] hover:bg-[#3a6b1e] text-white px-4 py-2 rounded-lg font-medium transition-colors duration-300 w-full shadow-sm">View Product</button>
+            </div>
+            <div class="card bg-white border border-gray-200 rounded-xl p-3 text-center shadow-md hover:shadow-lg transition-shadow duration-300" data-category="medium-indoor" data-price-value="650" data-size="medium" data-sun-light="bright-indirect" data-water-level="high"
+                 data-product-name="Calathea Plant" data-img="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Calathea" data-full-price="650" data-description="Calatheas are known for their stunning, intricately patterned leaves that often move throughout the day (hence 'prayer plants'). They prefer high humidity and indirect light."
+                 data-thumbnail-1="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Calathea+1"
+                 data-thumbnail-2="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Calathea+2"
+                 data-thumbnail-3="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Calathea+3">
+                <img src="images/Calathiya md.jpg" alt="Calathea Plant" class="w-full h-36 object-cover rounded-lg mb-3">
+                <p class="rating text-orange-400 text-sm mb-1">⭐ 4.5</p>
+                <h3 class="font-semibold text-lg text-gray-900 mb-1">Calathea</h3>
+                <p class="text-gray-700 text-base mb-3">Rs.650</p>
+                <button class="view-product-btn bg-[#4f872d] hover:bg-[#3a6b1e] text-white px-4 py-2 rounded-lg font-medium transition-colors duration-300 w-full shadow-sm">View Product</button>
+            </div>
+            <div class="card bg-white border border-gray-200 rounded-xl p-3 text-center shadow-md hover:shadow-lg transition-shadow duration-300" data-category="medium-indoor" data-price-value="510" data-size="medium" data-sun-light="low-light" data-water-level="medium"
+                 data-product-name="Dracaena Plant" data-img="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Dracaena" data-full-price="510" data-description="Dracaenas are popular for their striking foliage and ability to tolerate a range of indoor conditions. They come in many varieties, offering diverse leaf shapes and colors."
+                 data-thumbnail-1="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Dracaena+1"
+                 data-thumbnail-2="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Dracaena+2"
+                 data-thumbnail-3="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Dracaena+3">
+                <img src="images/Dieaffenachiya md.png" alt="Dracaena Plant" class="w-full h-36 object-cover rounded-lg mb-3">
+                <p class="rating text-orange-400 text-sm mb-1">⭐ 4.3</p>
+                <h3 class="font-semibold text-lg text-gray-900 mb-1">Dracaena</h3>
+                <p class="text-gray-700 text-base mb-3">Rs.510</p>
+                <button class="view-product-btn bg-[#4f872d] hover:bg-[#3a6b1e] text-white px-4 py-2 rounded-lg font-medium transition-colors duration-300 w-full shadow-sm">View Product</button>
+            </div>
+            <div class="card bg-white border border-gray-200 rounded-xl p-3 text-center shadow-md hover:shadow-lg transition-shadow duration-300" data-category="medium-indoor" data-price-value="1300" data-size="large" data-sun-light="bright-indirect" data-water-level="high"
+                 data-product-name="Alocasia Plant" data-img="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Alocasia" data-full-price="1300" data-description="Alocasias are stunning plants with unique, often arrow-shaped or heart-shaped leaves that can have dramatic veining. They prefer high humidity and bright, indirect light."
+                 data-thumbnail-1="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Alocasia+1"
+                 data-thumbnail-2="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Alocasia+2"
+                 data-thumbnail-3="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Alocasia+3">
+                <img src="images/aglonima.webp" alt="Alocasia Plant" class="w-full h-36 object-cover rounded-lg mb-3">
+                <p class="rating text-orange-400 text-sm mb-1">⭐ 4.7</p>
+                <h3 class="font-semibold text-lg text-gray-900 mb-1">Alocasia</h3>
+                <p class="text-gray-700 text-base mb-3">Rs.1300</p>
+                <button class="view-product-btn bg-[#4f872d] hover:bg-[#3a6b1e] text-white px-4 py-2 rounded-lg font-medium transition-colors duration-300 w-full shadow-sm">View Product</button>
+            </div>
+
+            <!-- Small Indoor Plants -->
+            <div class="card bg-white border border-gray-200 rounded-xl p-3 text-center shadow-md hover:shadow-lg transition-shadow duration-300" data-category="small-indoor" data-price-value="420" data-size="small" data-sun-light="medium-light" data-water-level="medium"
+                 data-product-name="Pothos Plant" data-img="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Pothos" data-full-price="420" data-description="Pothos plants are incredibly versatile and easy to care for, making them ideal for beginners. They have beautiful trailing vines and can thrive in various light conditions."
+                 data-thumbnail-1="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Pothos+1"
+                 data-thumbnail-2="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Pothos+2"
+                 data-thumbnail-3="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Pothos+3">
+                <img src="images/Peperomia.webp" alt="Pothos Plant" class="w-full h-36 object-cover rounded-lg mb-3">
+                <p class="rating text-orange-400 text-sm mb-1">⭐ 4.4</p>
+                <h3 class="font-semibold text-lg text-gray-900 mb-1">Pothos</h3>
+                <p class="text-gray-700 text-base mb-3">Rs.420</p>
+                <button class="view-product-btn bg-[#4f872d] hover:bg-[#3a6b1e] text-white px-4 py-2 rounded-lg font-medium transition-colors duration-300 w-full shadow-sm">View Product</button>
+            </div>
+            <div class="card bg-white border border-gray-200 rounded-xl p-3 text-center shadow-md hover:shadow-lg transition-shadow duration-300" data-category="small-indoor" data-price-value="350" data-size="small" data-sun-light="direct-sun" data-water-level="low"
+                 data-product-name="Aloe Vera Plant" data-img="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Aloe+Vera" data-full-price="350" data-description="Aloe Vera is a succulent plant known for its medicinal properties and ease of care. It prefers bright, direct sunlight and infrequent watering."
+                 data-thumbnail-1="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Aloe+Vera+1"
+                 data-thumbnail-2="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Aloe+Vera+2"
+                 data-thumbnail-3="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Aloe+Vera+3">
+                <img src="images/Areca md.jpg" alt="Aloe Vera Plant" class="w-full h-36 object-cover rounded-lg mb-3">
+                <p class="rating text-orange-400 text-sm mb-1">⭐ 4.2</p>
+                <h3 class="font-semibold text-lg text-gray-900 mb-1">Aloe Vera</h3>
+                <p class="text-gray-700 text-base mb-3">Rs.350</p>
+                <button class="view-product-btn bg-[#4f872d] hover:bg-[#3a6b1e] text-white px-4 py-2 rounded-lg font-medium transition-colors duration-300 w-full shadow-sm">View Product</button>
+            </div>
+            <div class="card bg-white border border-gray-200 rounded-xl p-3 text-center shadow-md hover:shadow-lg transition-shadow duration-300" data-category="small-indoor" data-price-value="610" data-size="small" data-sun-light="bright-indirect" data-water-level="medium"
+                 data-product-name="Money Plant" data-img="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Money+Plant" data-full-price="610" data-description="The Money Plant (Epipremnum aureum) is a popular indoor plant believed to bring good luck and prosperity. It's easy to care for and can grow long, trailing vines."
+                 data-thumbnail-1="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Money+Plant+1"
+                 data-thumbnail-2="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Money+Plant+2"
+                 data-thumbnail-3="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Money+Plant+3">
+                <img src="images/money joy.webp" alt="Money Plant" class="w-full h-36 object-cover rounded-lg mb-3">
+                <p class="rating text-orange-400 text-sm mb-1">⭐ 4.6</p>
+                <h3 class="font-semibold text-lg text-gray-900 mb-1">Money Plant</h3>
+                <p class="text-gray-700 text-base mb-3">Rs.610</p>
+                <button class="view-product-btn bg-[#4f872d] hover:bg-[#3a6b1e] text-white px-4 py-2 rounded-lg font-medium transition-colors duration-300 w-full shadow-sm">View Product</button>
+            </div>
+            <div class="card bg-white border border-gray-200 rounded-xl p-3 text-center shadow-md hover:shadow-lg transition-shadow duration-300" data-category="small-indoor" data-price-value="450" data-size="small" data-sun-light="medium-light" data-water-level="high"
+                 data-product-name="Boston Fern" data-img="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Boston+Fern" data-full-price="450" data-description="The Boston Fern is a classic, lush fern that adds a touch of greenery to any space. It thrives in high humidity and indirect light, perfect for bathrooms or shaded areas."
+                 data-thumbnail-1="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Boston+Fern+1"
+                 data-thumbnail-2="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Boston+Fern+2"
+                 data-thumbnail-3="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Boston+Fern+3">
+                <img src="images/bamboo.webp" alt="Boston Fern" class="w-full h-36 object-cover rounded-lg mb-3">
+                <p class="rating text-orange-400 text-sm mb-1">⭐ 4.0</p>
+                <h3 class="font-semibold text-lg text-gray-900 mb-1">Boston Fern</h3>
+                <p class="text-gray-700 text-base mb-3">Rs.450</p>
+                <button class="view-product-btn bg-[#4f872d] hover:bg-[#3a6b1e] text-white px-4 py-2 rounded-lg font-medium transition-colors duration-300 w-full shadow-sm">View Product</button>
+            </div>
+            <div class="card bg-white border border-gray-200 rounded-xl p-3 text-center shadow-md hover:shadow-lg transition-shadow duration-300" data-category="small-indoor" data-price-value="670" data-size="small" data-sun-light="low-light" data-water-level="high"
+                 data-product-name="Prayer Plant" data-img="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Prayer+Plant" data-full-price="670" data-description="The Prayer Plant (Maranta leuconeura) is famous for its striking foliage and the way its leaves fold up at night, resembling hands in prayer. It prefers high humidity and indirect light."
+                 data-thumbnail-1="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Prayer+Plant+1"
+                 data-thumbnail-2="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Prayer+Plant+2"
+                 data-thumbnail-3="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Prayer+Plant+3">
+                <img src="images/philiyodendro pl.webp" alt="Prayer Plant" class="w-full h-36 object-cover rounded-lg mb-3">
+                <p class="rating text-orange-400 text-sm mb-1">⭐ 4.6</p>
+                <h3 class="font-semibold text-lg text-gray-900 mb-1">Prayer Plant</h3>
+                <p class="text-gray-700 text-base mb-3">Rs.670</p>
+                <button class="view-product-btn bg-[#4f872d] hover:bg-[#3a6b1e] text-white px-4 py-2 rounded-lg font-medium transition-colors duration-300 w-full shadow-sm">View Product</button>
+            </div>
+
+            <!-- Plant Food -->
+            <div class="card bg-white border border-gray-200 rounded-xl p-3 text-center shadow-md hover:shadow-lg transition-shadow duration-300" data-category="plant-food" data-price-value="250" data-size="small" data-sun-light="n/a" data-water-level="n/a"
+                 data-product-name="Organic Fertilizer" data-img="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Organic+Fertilizer" data-full-price="250" data-description="Our organic fertilizer provides essential nutrients for healthy plant growth. Made from natural ingredients, it's safe for all indoor plants and promotes vibrant foliage and strong roots."
+                 data-thumbnail-1="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Organic+Fertilizer+1"
+                 data-thumbnail-2="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Organic+Fertilizer+2"
+                 data-thumbnail-3="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Organic+Fertilizer+3">
+                <img src="images/cowdung.jpg" alt="Organic Fertilizer" class="w-full h-36 object-cover rounded-lg mb-3">
+                <p class="rating text-orange-400 text-sm mb-1">⭐ 4.8</p>
+                <h3 class="font-semibold text-lg text-gray-900 mb-1">Organic Fertilizer</h3>
+                <p class="text-gray-700 text-base mb-3">Rs.250</p>
+                <button class="view-product-btn bg-[#4f872d] hover:bg-[#3a6b1e] text-white px-4 py-2 rounded-lg font-medium transition-colors duration-300 w-full shadow-sm">View Product</button>
+            </div>
+            <div class="card bg-white border border-gray-200 rounded-xl p-3 text-center shadow-md hover:shadow-lg transition-shadow duration-300" data-category="plant-food" data-price-value="320" data-size="small" data-sun-light="n/a" data-water-level="n/a"
+                 data-product-name="Liquid Plant Food" data-img="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Liquid+Plant+Food" data-full-price="320" data-description="Our liquid plant food is a convenient way to nourish your plants. Simply add to water during regular watering sessions to provide a boost to their growth and overall health."
+                 data-thumbnail-1="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Liquid+Plant+Food+1"
+                 data-thumbnail-2="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Liquid+Plant+Food+2"
+                 data-thumbnail-3="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Liquid+Plant+Food+3">
+                <img src="images/pot soli.jpg" alt="Liquid Plant Food" class="w-full h-36 object-cover rounded-lg mb-3">
+                <p class="rating text-orange-400 text-sm mb-1">⭐ 4.7</p>
+                <h3 class="font-semibold text-lg text-gray-900 mb-1">Liquid Plant Food</h3>
+                <p class="text-gray-700 text-base mb-3">Rs.320</p>
+                <button class="view-product-btn bg-[#4f872d] hover:bg-[#3a6b1e] text-white px-4 py-2 rounded-lg font-medium transition-colors duration-300 w-full shadow-sm">View Product</button>
+            </div>
+
+            <!-- Plant Care -->
+            <div class="card bg-white border border-gray-200 rounded-xl p-3 text-center shadow-md hover:shadow-lg transition-shadow duration-300" data-category="plant-care" data-price-value="180" data-size="small" data-sun-light="n/a" data-water-level="n/a"
+                 data-product-name="Misting Spray" data-img="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Misting+Spray" data-full-price="180" data-description="A fine misting spray is essential for many indoor plants, especially those that thrive in high humidity. It helps keep leaves clean and hydrated."
+                 data-thumbnail-1="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Misting+Spray+1"
+                 data-thumbnail-2="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Misting+Spray+2"
+                 data-thumbnail-3="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Misting+Spray+3">
+                <img src="images/neem cake.jpg" alt="Misting Spray" class="w-full h-36 object-cover rounded-lg mb-3">
+                <p class="rating text-orange-400 text-sm mb-1">⭐ 4.5</p>
+                <h3 class="font-semibold text-lg text-gray-900 mb-1">Misting Spray</h3>
+                <p class="text-gray-700 text-base mb-3">Rs.180</p>
+                <button class="view-product-btn bg-[#4f872d] hover:bg-[#3a6b1e] text-white px-4 py-2 rounded-lg font-medium transition-colors duration-300 w-full shadow-sm">View Product</button>
+            </div>
+            <div class="card bg-white border border-gray-200 rounded-xl p-3 text-center shadow-md hover:shadow-lg transition-shadow duration-300" data-category="plant-care" data-price-value="400" data-size="small" data-sun-light="n/a" data-water-level="n/a"
+                 data-product-name="Pruning Shears" data-img="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Pruning+Shears" data-full-price="400" data-description="High-quality pruning shears are essential for maintaining the health and shape of your plants. Perfect for trimming dead leaves or encouraging new growth."
+                 data-thumbnail-1="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Pruning+Shears+1"
+                 data-thumbnail-2="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Pruning+Shears+2"
+                 data-thumbnail-3="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Pruning+Shears+3">
+                <img src="images/Peperomia.webp" alt="Pruning Shears" class="w-full h-36 object-cover rounded-lg mb-3">
+                <p class="rating text-orange-400 text-sm mb-1">⭐ 4.6</p>
+                <h3 class="font-semibold text-lg text-gray-900 mb-1">Pruning Shears</h3>
+                <p class="text-gray-700 text-base mb-3">Rs.400</p>
+                <button class="view-product-btn bg-[#4f872d] hover:bg-[#3a6b1e] text-white px-4 py-2 rounded-lg font-medium transition-colors duration-300 w-full shadow-sm">View Product</button>
+            </div>
+        </section>
+
+        <!-- Pagination for Product Section -->
+        <div class="flex justify-center items-center gap-2 my-6">
+            <button class="p-2 rounded-full bg-gray-200 hover:bg-gray-300 transition-colors duration-200">
+                <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+            </button>
+            <span class="w-3 h-3 bg-[#4f872d] rounded-full"></span>
+            <span class="w-3 h-3 bg-gray-300 rounded-full"></span>
+            <span class="w-3 h-3 bg-gray-300 rounded-full"></span>
+            <button class="p-2 rounded-full bg-gray-200 hover:bg-gray-300 transition-colors duration-200">
+                <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            </button>
+        </div>
+
+        <!-- Promo Section 1 -->
+        <section class="promo bg-[#fceec0] p-8 md:p-12 m-4 md:m-8 text-center rounded-xl shadow-lg">
+            <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-6">Pick Any Four Plants At ₹1249/-</h2>
+            <button class="bg-[#3a6b1e] hover:bg-[#2c5218] text-white px-8 py-3 rounded-full font-bold text-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105">Shop Now</button>
+        </section>
+
+        <!-- Promo Section 2 -->
+        <section class="promo bg-[#fceec0] p-8 md:p-12 m-4 md:m-8 text-center rounded-xl shadow-lg">
+            <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-6">Pick Any Five Plants At ₹1549/-</h2>
+            <button class="bg-[#3a6b1e] hover:bg-[#2c5218] text-white px-8 py-3 rounded-full font-bold text-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105">Shop Now</button>
+        </section>
+
+        <!-- FAQ Section -->
+        <section class="faq p-6 md:p-8 max-w-2xl mx-auto my-8 bg-white rounded-xl shadow-lg">
+            <h2 class="text-3xl md:text-4xl font-extrabold text-center text-gray-900 mb-6">Frequently Asked Questions</h2>
+            <div class="space-y-4">
+                <div>
+                    <button class="faq-question w-full text-left p-4 bg-gray-100 hover:bg-gray-200 font-semibold text-lg rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-300 transition-colors duration-200 flex justify-between items-center">
+                        Where Should I Place My Indoor Plants ?
+                        <svg class="w-5 h-5 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="faq-answer hidden bg-gray-50 p-4 border-l-4 border-[#4f872d] text-gray-700 mt-2 rounded-r-lg">
+                        The ideal placement for your indoor plants depends on their light requirements. Generally, most indoor plants thrive in bright, indirect light. Avoid direct sunlight for plants that prefer lower light, and ensure good air circulation.
+                    </div>
+                </div>
+                <div>
+                    <button class="faq-question w-full text-left p-4 bg-gray-100 hover:bg-gray-200 font-semibold text-lg rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-300 transition-colors duration-200 flex justify-between items-center">
+                        How can I make my indoor plants grow fast ?
+                        <svg class="w-5 h-5 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="faq-answer hidden bg-gray-50 p-4 border-l-4 border-[#4f872d] text-gray-700 mt-2 rounded-r-lg">
+                        To encourage faster growth, provide adequate light, consistent watering (without overwatering), appropriate humidity, and regular fertilization during the growing season. Ensure they are in well-draining soil and a pot with drainage holes.
+                    </div>
+                </div>
+                <div>
+                    <button class="faq-question w-full text-left p-4 bg-gray-100 hover:bg-gray-200 font-semibold text-lg rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-300 transition-colors duration-200 flex justify-between items-center">
+                        How can I keep my plants bug free ?
+                        <svg class="w-5 h-5 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="faq-answer hidden bg-gray-50 p-4 border-l-4 border-[#4f872d] text-gray-700 mt-2 rounded-r-lg">
+                        Regularly inspect your plants for pests. If you find any, isolate the plant and treat it with neem oil, insecticidal soap, or other organic pest control methods. Good air circulation and proper watering can also help prevent infestations.
+                    </div>
+                </div>
+                <div>
+                    <button class="faq-question w-full text-left p-4 bg-gray-100 hover:bg-gray-200 font-semibold text-lg rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-300 transition-colors duration-200 flex justify-between items-center">
+                        Do indoor plants purified air ?
+                        <svg class="w-5 h-5 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 102 0V6zm-1 9a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path></svg>
+                    </button>
+                    <div class="faq-answer hidden bg-gray-50 p-4 border-l-4 border-[#4f872d] text-gray-700 mt-2 rounded-r-lg">
+                        Yes, many indoor plants are known to purify the air by absorbing common indoor pollutants like formaldehyde, benzene, and trichloroethylene, and releasing oxygen. While their effect on a large scale might be limited, they contribute to a healthier indoor environment.
+                    </div>
+                </div>
+                <div>
+                    <button class="faq-question w-full text-left p-4 bg-gray-100 hover:bg-gray-200 font-semibold text-lg rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-300 transition-colors duration-200 flex justify-between items-center">
+                        How often should I water my plants ?
+                        <svg class="w-5 h-5 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="faq-answer hidden bg-gray-50 p-4 border-l-4 border-[#4f872d] text-gray-700 mt-2 rounded-r-lg">
+                        Watering frequency depends on the plant type, pot size, humidity, and season. A good rule of thumb is to check the top inch or two of soil; if it feels dry, it's time to water. Avoid overwatering, which can lead to root rot.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Product Detail Section (within home-page-content) -->
+        <section id="product-detail-section" class="product-detail-section hidden">
+            <button id="back-to-products-btn" class="text-gray-600 hover:text-gray-900 mb-4 flex items-center gap-1">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                Back to Products
+            </button>
+            <div class="flex flex-col md:flex-row gap-8">
+                <div class="md:w-1/2">
+                    <img id="product-detail-main-img" src="" alt="Main Product Image" class="w-full h-80 object-cover rounded-lg shadow-md mb-4">
+                    <div id="product-detail-thumbnails" class="flex gap-2 justify-center">
+                        <!-- Thumbnails will be dynamically loaded here -->
+                    </div>
+                </div>
+                <div class="md:w-1/2">
+                    <h2 id="product-detail-name" class="text-3xl font-bold text-gray-900 mb-2"></h2>
+                    <p class="rating text-orange-400 text-lg mb-4">⭐ 4.5</p>
+                    <p id="product-detail-price" class="text-2xl font-bold text-gray-900 mb-4"></p>
+
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">Highlights</h3>
+                    <ul id="product-detail-highlights" class="list-disc list-inside text-gray-700 mb-6 space-y-1">
+                        <!-- Highlights will be dynamically loaded here -->
+                    </ul>
+
+                    <button id="product-detail-add-to-cart-btn" class="bg-[#4f872d] hover:bg-[#3a6b1e] text-white px-6 py-3 rounded-lg font-bold text-lg shadow-md hover:shadow-lg transition-all duration-300 w-full">Add to Basket</button>
+
+                    <div class="bg-green-100 text-green-800 text-sm font-semibold rounded-md p-3 mt-6 text-center">
+                        30 Day Damage Replacement Guarantee Replacement no extra cost
+                    </div>
+
+                    <h3 class="text-lg font-semibold text-gray-800 mt-6 mb-2">Self-Watering Plant Instructions</h3>
+                    <ul class="list-disc list-inside text-gray-700 space-y-1">
+                        <li>Simply open the lid and fill with water</li>
+                        <li>The plant drinks only when needed</li>
+                        <li>The result - healthy, long-lived plants that are easy to maintain.</li>
+                    </ul>
+
+                    <!-- Customer Reviews Section -->
+                    <div class="customer-reviews mt-8">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Customer Reviews</h3>
+                        <div class="space-y-4">
+                            <!-- Example Review 1 -->
+                            <div class="bg-gray-50 p-4 rounded-lg shadow-sm border border-gray-100">
+                                <div class="flex items-center mb-2">
+                                    <span class="font-bold text-gray-800 mr-2">Ramya</span>
+                                    <span class="text-orange-400 text-sm">⭐⭐⭐⭐⭐</span>
+                                </div>
+                                <p class="text-gray-700 text-sm">"Amazing plant! It arrived in perfect condition and is thriving. Highly recommend Ray for quality indoor plants."</p>
+                            </div>
+                            <!-- Example Review 2 -->
+                            <div class="bg-gray-50 p-4 rounded-lg shadow-sm border border-gray-100">
+                                <div class="flex items-center mb-2">
+                                    <span class="font-bold text-gray-800 mr-2">Priya</span>
+                                    <span class="text-orange-400 text-sm">⭐⭐⭐⭐</span>
+                                </div>
+                                <p class="text-gray-700 text-sm">"Beautiful plant, but delivery took a bit longer than expected. Still, very happy with the product itself!"</p>
+                            </div>
+                            <!-- Example Review 3 -->
+                            <div class="bg-gray-50 p-4 rounded-lg shadow-sm border border-gray-100">
+                                <div class="flex items-center mb-2">
+                                    <span class="font-bold text-gray-800 mr-2">Arjun</span>
+                                    <span class="text-orange-400 text-sm">⭐⭐⭐⭐⭐</span>
+                                </div>
+                                <p class="text-gray-700 text-sm">"The self-watering pot is a game-changer! My plant is so easy to care for now. Will definitely buy again."</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Best Seller Page Content Section -->
+    <div id="best-seller-page-content" class="hidden">
+        <main class="p-4 md:p-8">
+            <h2 class="text-3xl md:text-4xl font-extrabold text-center text-gray-900 mb-8">Our Best Sellings</h2>
+            <!-- Best Selling Products Grid 1 -->
+            <section class="products-grid flex flex-wrap justify-center gap-4 md:gap-6 p-4 md:p-6">
+                <!-- Product Card: Water Globe -->
+                <div class="card bg-white border border-gray-200 rounded-xl p-3 text-center shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <img src="images/Dieaffenachiya md.png" alt="Water Globe" class="w-full h-36 object-cover rounded-lg mb-3">
+                    <p class="rating text-orange-400 text-sm mb-1">⭐ 4.8</p>
+                    <h3 class="font-semibold text-lg text-gray-900 mb-1">Water Globe</h3>
+                    <p class="text-gray-700 text-base mb-3">Rs.790</p>
+                    <button class="add-to-basket-btn bg-[#4f872d] hover:bg-[#3a6b1e] text-white px-4 py-2 rounded-lg font-medium transition-colors duration-300 w-full shadow-sm" data-product-name="Water Globe" data-price="790" data-img="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Water+Globe">Add to Basket</button>
+                </div>
+                <!-- Product Card: Vermicompost -->
+                <div class="card bg-white border border-gray-200 rounded-xl p-3 text-center shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <img src="images/vermi.jpg" alt="Vermicompost" class="w-full h-36 object-cover rounded-lg mb-3">
+                    <p class="rating text-orange-400 text-sm mb-1">⭐ 4.2</p>
+                    <h3 class="font-semibold text-lg text-gray-900 mb-1">Vermicompost</h3>
+                    <p class="text-gray-700 text-base mb-3">Rs.540</p>
+                    <button class="add-to-basket-btn bg-[#4f872d] hover:bg-[#3a6b1e] text-white px-4 py-2 rounded-lg font-medium transition-colors duration-300 w-full shadow-sm" data-product-name="Vermicompost" data-price="540" data-img="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Vermicompost">Add to Basket</button>
+                </div>
+                <!-- Product Card: Plant Straw -->
+                <div class="card bg-white border border-gray-200 rounded-xl p-3 text-center shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <img src="images/Fidal fig pl.webp" alt="Plant Straw" class="w-full h-36 object-cover rounded-lg mb-3">
+                    <p class="rating text-orange-400 text-sm mb-1">⭐ 4.0</p>
+                    <h3 class="font-semibold text-lg text-gray-900 mb-1">Plant Straw</h3>
+                    <p class="text-gray-700 text-base mb-3">Rs.290</p>
+                    <button class="add-to-basket-btn bg-[#4f872d] hover:bg-[#3a6b1e] text-white px-4 py-2 rounded-lg font-medium transition-colors duration-300 w-full shadow-sm" data-product-name="Plant Straw" data-price="290" data-img="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Plant+Straw">Add to Basket</button>
+                </div>
+                <!-- Product Card: Water Meter -->
+                <div class="card bg-white border border-gray-200 rounded-xl p-3 text-center shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <img src="images/oyster.webp" alt="Water Meter" class="w-full h-36 object-cover rounded-lg mb-3">
+                    <p class="rating text-orange-400 text-sm mb-1">⭐ 4.8</p>
+                    <h3 class="font-semibold text-lg text-gray-900 mb-1">Water Meter</h3>
+                    <p class="text-gray-700 text-base mb-3">Rs.290</p>
+                    <button class="add-to-basket-btn bg-[#4f872d] hover:bg-[#3a6b1e] text-white px-4 py-2 rounded-lg font-medium transition-colors duration-300 w-full shadow-sm" data-product-name="Water Meter" data-price="290" data-img="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Water+Meter">Add to Basket</button>
+                </div>
+            </section>
+
+            <!-- Promo Section "Pick Any Five Plant" -->
+            <section class="promo bg-[#fceec0] p-8 md:p-12 m-4 md:m-8 text-center rounded-xl shadow-lg">
+                <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-6">Pick Any Five Plant At ₹1549/-</h2>
+                <button class="bg-[#3a6b1e] hover:bg-[#2c5218] text-white px-8 py-3 rounded-full font-bold text-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105">Shop Now</button>
+            </section>
+
+            <!-- Best Selling Products Grid 2 -->
+            <section class="products-grid flex flex-wrap justify-center gap-4 md:gap-6 p-4 md:p-6">
+                <!-- Product Card: Oyster Plant with Self Watering Plant -->
+                <div class="card bg-white border border-gray-200 rounded-xl p-3 text-center shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <img src="images/Croton md.webp" alt="Oyster Plant with Self Watering Plant" class="w-full h-36 object-cover rounded-lg mb-3">
+                    <p class="rating text-orange-400 text-sm mb-1">⭐ 4.8</p>
+                    <h3 class="font-semibold text-lg text-gray-900 mb-1">Oyster Plant with Self Watering Plant</h3>
+                    <p class="text-gray-700 text-base mb-3">Rs.390</p>
+                    <button class="add-to-basket-btn bg-[#4f872d] hover:bg-[#3a6b1e] text-white px-4 py-2 rounded-lg font-medium transition-colors duration-300 w-full shadow-sm" data-product-name="Oyster Plant with Self Watering Plant" data-price="390" data-img="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Oyster+Plant">Add to Basket</button>
+                </div>
+                <!-- Product Card: Lucky Jade Plant with Self Watering Plant -->
+                <div class="card bg-white border border-gray-200 rounded-xl p-3 text-center shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <img src="images/jade plant.jpg" alt="Lucky Jade Plant with Self Watering Plant" class="w-full h-36 object-cover rounded-lg mb-3">
+                    <p class="rating text-orange-400 text-sm mb-1">⭐ 4.8</p>
+                    <h3 class="font-semibold text-lg text-gray-900 mb-1">Lucky Jade Plant with Self Watering Plant</h3>
+                    <p class="text-gray-700 text-base mb-3">Rs.290</p>
+                    <button class="add-to-basket-btn bg-[#4f872d] hover:bg-[#3a6b1e] text-white px-4 py-2 rounded-lg font-medium transition-colors duration-300 w-full shadow-sm" data-product-name="Lucky Jade Plant" data-price="290" data-img="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Lucky+Jade">Add to Basket</button>
+                </div>
+                <!-- Product Card: Peacock Plant with Self Watering Plant -->
+                <div class="card bg-white border border-gray-200 rounded-xl p-3 text-center shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <img src="images/Peacok pl.webp" alt="Peacock Plant with Self Watering Plant" class="w-full h-36 object-cover rounded-lg mb-3">
+                    <p class="rating text-orange-400 text-sm mb-1">⭐ 4.8</p>
+                    <h3 class="font-semibold text-lg text-gray-900 mb-1">Peacock Plant with Self Watering Plant</h3>
+                    <p class="text-gray-700 text-base mb-3">Rs.720</p>
+                    <button class="add-to-basket-btn bg-[#4f872d] hover:bg-[#3a6b1e] text-white px-4 py-2 rounded-lg font-medium transition-colors duration-300 w-full shadow-sm" data-product-name="Peacock Plant with Self Watering Plant" data-price="720" data-img="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Peacock+Plant">Add to Basket</button>
+                </div>
+                <!-- Product Card: Peperomia Plant with Self Watering Plant -->
+                <div class="card bg-white border border-gray-200 rounded-xl p-3 text-center shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <img src="images/Peperomia.webp" alt="Peperomia Plant with Self Watering Plant" class="w-full h-36 object-cover rounded-lg mb-3">
+                    <p class="rating text-orange-400 text-sm mb-1">⭐ 4.8</p>
+                    <h3 class="font-semibold text-lg text-gray-900 mb-1">Peperomia Plant with Self Watering Plant</h3>
+                    <p class="text-gray-700 text-base mb-3">Rs.390</p>
+                    <button class="add-to-basket-btn bg-[#4f872d] hover:bg-[#3a6b1e] text-white px-4 py-2 rounded-lg font-medium transition-colors duration-300 w-full shadow-sm" data-product-name="Peperomia Plant with Self Watering Plant" data-price="390" data-img="https://placehold.co/150x150/EBF4EF/3A6B1E?text=Peperomia+Plant">Add to Basket</button>
+                </div>
+            </section>
+
+            <!-- Bottom Promo Banner -->
+            <section class="bg-[#f0f5ec] p-4 md:p-6 mx-4 md:mx-8 my-8 rounded-xl text-center shadow-lg flex items-center justify-center gap-4">
+                <span class="text-2xl md:text-3xl font-bold text-gray-900">🤑</span>
+                <h2 class="text-xl md:text-2xl font-extrabold text-gray-900">Get 12% off on order above @ ₹1999</h2>
+            </section>
+        </main>
+    </div>
+
+    <!-- Deal Of the Day Page Content Section -->
+    <div id="deal-of-day-page-content" class="hidden">
+        <main class="p-4 md:p-8">
+            <div class="flex flex-col md:flex-row items-center justify-between bg-gray-100 p-4 rounded-xl shadow-md mb-8">
+                <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4 md:mb-0">Deal Of the Day</h2>
+                <div class="flex items-center gap-4">
+                    <span class="text-lg font-semibold text-gray-700">Today's Green Glory</span>
+                    <div class="flex gap-2">
+                        <div class="timer-box">
+                            <span id="deal-hour" class="timer-value">00</span>
+                            <span class="timer-label">Hour</span>
+                        </div>
+                        <div class="timer-box">
+                            <span id="deal-min" class="timer-value">00</span>
+                            <span class="timer-label">Min</span>
+                        </div>
+                        <div class="timer-box">
+                            <span id="deal-sec" class="timer-value">00</span>
+                            <span class="timer-label">Sec</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Deal Product -->
+            <section class="flex flex-col md:flex-row items-center bg-white rounded-xl shadow-lg p-6 md:p-8 mb-8 gap-6">
+                <div class="w-full md:w-1/3 flex justify-center">
+                    <img src="images/water globe.jpg" alt="Set Of 2 Lucky Bamboo Plant with Self Watering Plant" class="w-full max-w-[250px] h-auto object-cover rounded-lg shadow-md">
+                </div>
+                <div class="w-full md:w-2/3 text-center md:text-left">
+                    <p class="rating text-orange-400 text-lg mb-2">⭐ 4.8</p>
+                    <h3 class="font-semibold text-lg text-gray-900 mb-3">Set Of 2 Lucky Bamboo Plant with Self Watering Plant</h3>
+                    <p class="text-gray-700 text-xl font-semibold mb-4">only At Rs.400</p>
+                    <button class="add-to-basket-btn bg-[#4f872d] hover:bg-[#3a6b1e] text-white px-6 py-3 rounded-lg font-bold text-lg transition-colors duration-300 shadow-md" data-product-name="Set Of 2 Lucky Bamboo Plant" data-price="400" data-img="images/water globe.jpg">Add to Basket</button>
+                </div>
+            </section>
+
+            <!-- Must-Haves Banner -->
+            <section class="bg-[#D4EDDA] p-6 md:p-8 mx-auto my-8 rounded-xl text-center shadow-lg flex flex-col md:flex-row items-center justify-center gap-4">
+                <img src="https://placehold.co/80x80/D4EDDA/3A6B1E?text=🌿" alt="Plant Icon" class="w-20 h-20 object-contain">
+                <h2 class="text-xl md:text-2xl font-extrabold text-gray-900">Must-Haves <br class="md:hidden"> Long-lasting deals on our most-loved plants.</h2>
+            </section>
+
+            <!-- Deal Products Grid -->
+            <section class="products-grid flex flex-wrap justify-center gap-4 md:gap-6 p-4 md:p-6">
+                <!-- Product Card: Oyster Plant -->
+                <div class="card bg-white border border-gray-200 rounded-xl p-3 text-center shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <img src="images/oyster.webp" alt="Oyster Plant" class="w-full h-36 object-cover rounded-lg mb-3">
+                    <p class="rating text-orange-400 text-sm mb-1">⭐ 4.8</p>
+                    <h3 class="font-semibold text-lg text-gray-900 mb-1">Oyster Plant</h3>
+                    <p class="text-gray-700 text-base mb-3">Rs.390</p>
+                    <button class="add-to-basket-btn bg-[#4f872d] hover:bg-[#3a6b1e] text-white px-4 py-2 rounded-lg font-medium transition-colors duration-300 w-full shadow-sm" data-product-name="Oyster Plant" data-price="390" data-img="images/oyster.webp">Add to Basket</button>
+                </div>
+                <!-- Product Card: Lucky Jade Plant -->
+                <div class="card bg-white border border-gray-200 rounded-xl p-3 text-center shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <img src="images/jade plant.jpg" alt="Lucky Jade Plant" class="w-full h-36 object-cover rounded-lg mb-3">
+                    <p class="rating text-orange-400 text-sm mb-1">⭐ 4.8</p>
+                    <h3 class="font-semibold text-lg text-gray-900 mb-1">Lucky Jade Plant</h3>
+                    <p class="text-gray-700 text-base mb-3">Rs.290</p>
+                    <button class="add-to-basket-btn bg-[#4f872d] hover:bg-[#3a6b1e] text-white px-4 py-2 rounded-lg font-medium transition-colors duration-300 w-full shadow-sm" data-product-name="Lucky Jade Plant" data-price="290" data-img="images/jade plant.jpg">Add to Basket</button>
+                </div>
+                <!-- Product Card: Peacock Plant -->
+                <div class="card bg-white border border-gray-200 rounded-xl p-3 text-center shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <img src="images/Peacok pl.webp" alt="Peacock Plant" class="w-full h-36 object-cover rounded-lg mb-3">
+                    <p class="rating text-orange-400 text-sm mb-1">⭐ 4.8</p>
+                    <h3 class="font-semibold text-lg text-gray-900 mb-1">Peacock Plant</h3>
+                    <p class="text-gray-700 text-base mb-3">Rs.720</p>
+                    <button class="add-to-basket-btn bg-[#4f872d] hover:bg-[#3a6b1e] text-white px-4 py-2 rounded-lg font-medium transition-colors duration-300 w-full shadow-sm" data-product-name="Peacock Plant" data-price="720" data-img="images/Peacok pl.webp">Add to Basket</button>
+                </div>
+                <!-- Product Card: Peperomia Plant -->
+                <div class="card bg-white border border-gray-200 rounded-xl p-3 text-center shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <img src="images/Peperomia.webp" alt="Peperomia Plant" class="w-full h-36 object-cover rounded-lg mb-3">
+                    <p class="rating text-orange-400 text-sm mb-1">⭐ 4.8</p>
+                    <h3 class="font-semibold text-lg text-gray-900 mb-1">Peperomia Plant</h3>
+                    <p class="text-gray-700 text-base mb-3">Rs.390</p>
+                    <button class="add-to-basket-btn bg-[#4f872d] hover:bg-[#3a6b1e] text-white px-4 py-2 rounded-lg font-medium transition-colors duration-300 w-full shadow-sm" data-product-name="Peperomia Plant" data-price="390" data-img="images/Peperomia.webp">Add to Basket</button>
+                </div>
+            </section>
+
+            <!-- Monthly Must-Haves Banner -->
+            <section class="bg-[#fceec0] p-6 md:p-8 mx-auto my-8 rounded-xl text-center shadow-lg flex flex-col md:flex-row items-center justify-center gap-4">
+                <img src="https://placehold.co/100x100/D4EDDA/3A6B1E?text=👩‍🌾" alt="Monthly Must-Haves Illustration" class="w-24 h-24 object-contain rounded-full">
+                <h2 class="text-xl md:text-2xl font-extrabold text-gray-900">Monthly Must-Haves <br class="md:hidden"> Long-lasting deals on our most-loved plants.</h2>
+            </section>
+
+            <!-- More Deal Products Grid -->
+            <section class="products-grid flex flex-wrap justify-center gap-4 md:gap-6 p-4 md:p-6">
+                <!-- Product Card: Monstera Plant -->
+                <div class="card bg-white border border-gray-200 rounded-xl p-3 text-center shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <img src="images/money joy.webp" alt="Monstera Plant" class="w-full h-36 object-cover rounded-lg mb-3">
+                    <p class="rating text-orange-400 text-sm mb-1">⭐ 4.9</p>
+                    <h3 class="font-semibold text-lg text-gray-900 mb-1">Monstera Plant</h3>
+                    <p class="text-gray-700 text-base mb-3">Rs.1200</p>
+                    <button class="add-to-basket-btn bg-[#4f872d] hover:bg-[#3a6b1e] text-white px-4 py-2 rounded-lg font-medium transition-colors duration-300 w-full shadow-sm" data-product-name="Monstera Plant" data-price="1200" data-img="images/money joy.webp">Add to Basket</button>
+                </div>
+                <!-- Product Card: Aglaonema Plant -->
+                <div class="card bg-white border border-gray-200 rounded-xl p-3 text-center shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <img src="images/aglonima.webp" alt="Aglanema Plant" class="w-full h-36 object-cover rounded-lg mb-3">
+                    <p class="rating text-orange-400 text-sm mb-1">⭐ 4.7</p>
+                    <h3 class="font-semibold text-lg text-gray-900 mb-1">Aglanema Plant</h3>
+                    <p class="text-gray-700 text-base mb-3">Rs.720</p>
+                    <button class="add-to-basket-btn bg-[#4f872d] hover:bg-[#3a6b1e] text-white px-4 py-2 rounded-lg font-medium transition-colors duration-300 w-full shadow-sm" data-product-name="Aglanema Plant" data-price="720" data-img="images/aglonima.webp">Add to Basket</button>
+                </div>
+                <!-- Product Card: Ficus Plant -->
+                <div class="card bg-white border border-gray-200 rounded-xl p-3 text-center shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <img src="images/Fidal fig pl.webp" alt="Ficus Plant" class="w-full h-36 object-cover rounded-lg mb-3">
+                    <p class="rating text-orange-400 text-sm mb-1">⭐ 4.9</p>
+                    <h3 class="font-semibold text-lg text-gray-900 mb-1">Ficus Plant</h3>
+                    <p class="text-gray-700 text-base mb-3">Rs.1800</p>
+                    <button class="add-to-basket-btn bg-[#4f872d] hover:bg-[#3a6b1e] text-white px-4 py-2 rounded-lg font-medium transition-colors duration-300 w-full shadow-sm" data-product-name="Ficus Plant" data-price="1800" data-img="images/Fidal fig pl.webp">Add to Basket</button>
+                </div>
+                <!-- Product Card: Lucky Plant -->
+                <div class="card bg-white border border-gray-200 rounded-xl p-3 text-center shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <img src="images/money joy.webp" alt="Lucky Plant" class="w-full h-36 object-cover rounded-lg mb-3">
+                    <p class="rating text-orange-400 text-sm mb-1">⭐ 4.5</p>
+                    <h3 class="font-semibold text-lg text-gray-900 mb-1">Lucky Plant</h3>
+                    <p class="text-gray-700 text-base mb-3">Rs.650</p>
+                    <button class="add-to-basket-btn bg-[#4f872d] hover:bg-[#3a6b1e] text-white px-4 py-2 rounded-lg font-medium transition-colors duration-300 w-full shadow-sm" data-product-name="Lucky Plant" data-price="650" data-img="images/money joy.webp">Add to Basket</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Track Your Order Page Content Section -->
+    <div id="track-order-page-content" class="hidden">
+        <main class="p-4 md:p-8">
+            <div class="track-order-container">
+                <div class="flex items-center justify-center mb-6">
+                    <img src="https://placehold.co/80x80/D4EDDA/3A6B1E?text=🚚" alt="Delivery Truck Icon" class="w-20 h-20 mb-4">
+                </div>
+                <h2 class="text-3xl md:text-4xl font-extrabold text-center text-gray-900 mb-6">Track your Order</h2>
+
+                <div class="flex justify-center gap-4 mb-8">
+                    <button id="order-id-btn" class="track-order-toggle-button active">Order ID</button>
+                    <button id="invoice-id-btn" class="track-order-toggle-button">Invoice ID</button>
+                </div>
+
+                <div class="space-y-6">
+                    <input type="text" id="order-ref-no" placeholder="Order ref.. No" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-300 transition-all duration-300 text-gray-800" />
+                    <input type="text" id="billing-contact" placeholder="Enter Billing Contact" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-300 transition-all duration-300 text-gray-800" />
+                </div>
+
+                <button class="bg-[#4f872d] hover:bg-[#3a6b1e] text-white px-8 py-3 rounded-lg font-bold text-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105 mt-8 w-full">Track</button>
+            </div>
+        </main>
+    </div>
+
+    <!-- Shopping Cart Page Content Section -->
+    <div id="shopping-cart-page-content" class="hidden">
+        <main class="p-4 md:p-8">
+            <div class="shopping-cart-page">
+                <div class="flex justify-between items-center p-4 border-b border-gray-200 bg-white text-gray-900 rounded-t-lg -mx-4 -mt-4">
+                    <h3 class="text-xl font-bold">Shopping Cart (<span id="cart-item-count-modal">0</span>)</h3>
+                    <button id="close-cart-page-btn" class="text-gray-500 hover:text-gray-800 text-2xl font-bold">&times;</button>
+                </div>
+                <!-- Discount Banner -->
+                <div class="p-4 bg-red-500 text-white text-sm font-semibold rounded-md my-4 text-center flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 102 0V6zm-1 9a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path></svg>
+                    Apply Discount At the Check Out
+                </div>
+
+                <!-- Empty Cart State -->
+                <div id="empty-cart-state" class="text-center py-8 hidden">
+                    <p class="text-gray-700 text-lg mb-4">Your Cart Is currently Empty</p>
+                    <div class="bg-yellow-200 text-yellow-800 px-4 py-2 rounded-lg font-semibold inline-block mb-4">
+                        No Savings on this order
+                    </div>
+                    <button id="continue-browsing-btn" class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-bold text-lg shadow-md hover:shadow-lg transition-all duration-300 w-full max-w-xs mx-auto block">Continue Browsing</button>
+                </div>
+
+                <!-- Cart Items List (hidden when empty) -->
+                <div id="cart-items-list" class="flex-1 p-4 overflow-y-auto">
+                    <!-- Cart items will be dynamically added here -->
+                </div>
+
+                <!-- Cart Summary (hidden when empty) -->
+                <div id="cart-summary" class="p-4 border-t border-gray-200 bg-gray-50 -mx-4 rounded-b-lg hidden">
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="text-lg font-semibold">Total:</span>
+                        <span id="cart-total" class="text-lg font-bold">Rs.0</span>
+                    </div>
+                    <button id="proceed-to-checkout-btn" class="bg-[#3a6b1e] hover:bg-[#2c5218] text-white px-4 py-2 rounded-lg font-medium transition-colors duration-300 w-full shadow-sm">Proceed to Checkout</button>
+                </div>
+
+                <!-- Recommended Products Section in Cart -->
+                <div class="p-4 border-t border-gray-200 bg-gray-100 -mx-4 -mb-4 rounded-b-lg mt-4">
+                    <h4 class="font-bold text-lg mb-4 text-gray-800">Recommended Product</h4>
+                    <div class="flex flex-wrap justify-center gap-4">
+                        <!-- Recommended Product 1: Aglaonema Ice Plant -->
+                        <div class="w-full sm:w-1/2 p-2 bg-white rounded-lg shadow-sm text-center border border-gray-200">
+                            <img src="images/Agloanima md.webp" alt="Aglanema Ice Plant" class="w-full h-36 object-cover rounded-md mb-2">
+                            <p class="rating text-orange-400 text-sm mb-1">⭐ 4.5</p>
+                            <h5 class="text-sm font-semibold text-gray-900 mb-1">Aglanema Ice Plant with Self Watering Plant</h5>
+                            <p class="text-gray-700 text-xs mb-2">280</p>
+                        </div>
+                        <!-- Recommended Product 2: Areca Plant -->
+                        <div class="w-full sm:w-1/2 p-2 bg-white rounded-lg shadow-sm text-center border border-gray-200">
+                            <img src="images/Areca md.jpg" alt="Areca Plant with Self Watering Plant" class="w-full h-36 object-cover rounded-md mb-2">
+                            <p class="rating text-orange-400 text-sm mb-1">⭐ 4.5</p>
+                            <h5 class="text-sm font-semibold text-gray-900 mb-1">Areca Plant with Self Watering Plant</h5>
+                            <p class="text-gray-700 text-xs mb-2">580</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Damage in Transit Guarantee outside the main cart content -->
+            <p class="text-xs text-gray-600 mt-4 text-center">Damage in Transit Guarantee Replacement no extra cost</p>
+        </main>
+    </div>
+
+
+    <!-- Payment Page Content Section -->
+    <div id="payment-page-content" class="hidden">
+        <main class="p-4 md:p-8 max-w-lg mx-auto bg-white rounded-xl shadow-lg my-8">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-900">Payment Due</h2>
+                <button id="close-payment-btn" class="text-gray-500 text-2xl font-bold">&times;</button>
+            </div>
+            <div class="flex justify-between items-center bg-gray-100 p-4 rounded-lg mb-6">
+                <span class="text-lg font-semibold text-gray-700">Summary of Payment :</span>
+                <span id="payment-due-amount" class="text-xl font-bold text-gray-900">Rs.0</span>
+            </div>
+
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">Payment Option</h3>
+            <div class="space-y-3">
+                <button class="payment-option-btn active" data-payment-method="upi">
+                    <span class="flex items-center">
+                        <img src="https://placehold.co/24x24/D4EDDA/3A6B1E?text=U" alt="UPI Icon"> UPI
+                    </span>
+                    <span>Rs.<span class="upi-amount">0</span> ></span>
+                </button>
+                <button class="payment-option-btn" data-payment-method="gpay">
+                    <span class="flex items-center">
+                        <img src="https://placehold.co/24x24/D4EDDA/3A6B1E?text=G" alt="GPay Icon"> GPay
+                    </span>
+                    <span>Rs.<span class="gpay-amount">0</span> ></span>
+                </button>
+            </div>
+
+            <button id="make-payment-btn" class="bg-[#4f872d] hover:bg-[#3a6b1e] text-white px-8 py-3 rounded-lg font-bold text-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105 mt-8 w-full">Make Payment</button>
+        </main>
+    </div>
+
+    <!-- Payment Successful Page Content Section -->
+    <div id="payment-successful-page-content" class="hidden">
+        <main class="p-4 md:p-8 max-w-lg mx-auto bg-white rounded-xl shadow-lg my-8 text-center">
+            <div class="flex justify-end">
+                <button id="close-payment-success-btn" class="text-gray-500 text-2xl font-bold">&times;</button>
+            </div>
+            <div class="flex flex-col items-center justify-center py-8">
+                <svg class="w-24 h-24 text-green-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <h2 class="text-3xl font-extrabold text-gray-900 mb-4">Payment Successful</h2>
+                <p class="text-lg text-gray-700 mb-2">Thanks For Choosing Us</p>
+                <p class="text-md text-gray-600">Your Order Has Placed successfully</p>
+                <p class="text-md text-gray-600">It Will Be delivered in correct estimated time</p>
+            </div>
+        </main>
+    </div>
+
+    <!-- About Us Page Content Section -->
+    <div id="about-us-page-content" class="hidden">
+        <main class="p-4 md:p-8">
+            <div class="about-us-page">
+                <div class="flex flex-col md:flex-row items-center md:items-start gap-8 mb-12">
+                    <div class="md:w-2/3 text-center md:text-left">
+                        <h2 class="text-white text-4xl font-bold mb-4">Our Story</h2>
+                        <p class="text-green-100 text-lg mb-4">
+                            Hey there! I'm Siddhant Bhalinge, the Founder and CEO of Ray and I'd love to share our story with you.
+                        </p>
+                        <p class="text-green-100 text-lg mb-4">
+                            It's a story of passion, perseverance, and a deep love for nature that's been passed down in my family for three generations.
+                        </p>
+                    </div>
+                    <div class="md:w-1/3 flex justify-center md:justify-end">
+                        <img src="images\Rectangle 95.png" alt="Siddhant Bhalinge" class="w-64 h-64 object-cover rounded-xl shadow-lg">
+                    </div>
+                </div>
+
+                <div class="flex flex-col md:flex-row items-center md:items-start gap-8 mb-12">
+                    <div class="md:w-1/3 flex justify-center md:justify-start">
+                        <img src="images\Rectangle 96.png" alt="Namdeo Umaji" class="w-64 h-64 object-cover rounded-xl shadow-lg">
+                    </div>
+                    <div class="md:w-2/3 text-center md:text-left">
+                        <p class="text-green-100 text-lg mb-4">
+                            Our story began with Namdeo Umaji. The oldest seed company in India, founded by my great-grandfather in 1885.
+                        </p>
+                        <p class="text-green-100 text-lg">
+                            As a young boy, I spent my days in his Byculla shop, surrounded by the promise of life contained in tiny seeds. Those formative years really were the stepping stones of Ray's own journey.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+                    <div class="about-us-card">
+                        <img src="images\Rectangle 97.png" alt="Innovation Icon">
+                        <h3 class="about-us-section-title">Innovation</h3>
+                        <p class="text-green-100 text-sm">
+                            Be it our cylinder packaging, self-watering pots, the online ordering experience, or even our R&D, Ray believes in innovation and making the plant-parenting journey easy and stress-free.
+                        </p>
+                    </div>
+                    <div class="about-us-card">
+                        <img src="images\Rectangle 98.png" alt="Education Icon">
+                        <h3 class="about-us-section-title">Education</h3>
+                        <p class="text-green-100 text-sm">
+                            Buying plants can sometimes be overwhelming, especially in the beginning. Through our blog, newsletters, and social channels, we've made a conscious effort to educate and inspire customers in their journey.
+                        </p>
+                    </div>
+                    <div class="about-us-card">
+                        <img src="images\Rectangle 99.png" alt="Aesthetics Icon">
+                        <h3 class="about-us-section-title">Aesthetics</h3>
+                        <p class="text-green-100 text-sm">
+                            Our plants always enhance the space they occupy. We make concerted efforts in not only nurturing our plants in the best way possible, but making them look good too.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Custom Modal Structure -->
+    <div id="custom-modal-backdrop" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full mx-4 relative">
+            <button id="custom-modal-close-btn" class="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-2xl font-bold">&times;</button>
+            <p id="custom-modal-message" class="text-lg text-gray-800 text-center mb-4"></p>
+            <button id="custom-modal-ok-btn" class="bg-[#4f872d] hover:bg-[#3a6b1e] text-white px-4 py-2 rounded-lg font-medium w-full">OK</button>
+        </div>
+    </div>
+
+
+    <!-- Footer Section -->
+    <footer id="footer-contact" class="bg-[#4f872d] text-white p-6 md:p-8 text-center rounded-t-lg shadow-inner mt-8">
+        <p class="text-lg md:text-xl font-semibold mb-6">🌿 Free Shipping on order above ₹500 | Cash On Delivery Available</p>
+        <div class="footer-columns flex flex-col md:flex-row justify-around flex-wrap gap-8 md:gap-4 mb-8 text-left">
+            <div class="flex-1 min-w-[150px]">
+                <h4 class="font-bold text-xl mb-3">Category</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="#" class="hover:text-green-200 transition-colors duration-200">XL Indoor Plant</a></li>
+                    <li><a href="#" class="hover:text-green-200 transition-colors duration-200">Medium Indoor Plant</a></li>
+                    <li><a href="#" class="hover:text-green-200 transition-colors duration-200">Plant Food</a></li>
+                    <li><a href="#" class="hover:text-green-200 transition-colors duration-200">Plant Care</a></li>
+                </ul>
+            </div>
+            <div class="flex-1 min-w-[150px]">
+                <h4 class="font-bold text-xl mb-3">Quick Links</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="#" class="hover:text-green-200 transition-colors duration-200">About Us</a></li>
+                    <li><a href="#" class="hover:text-green-200 transition-colors duration-200">FAQs</a></li>
+                    <li><a href="#" class="hover:text-green-200 transition-colors duration-200">Terms & Conditions</a></li>
+                    <li><a href="#" class="hover:text-green-200 transition-colors duration-200">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div class="flex-1 min-w-[200px]">
+                <h4 class="font-bold text-xl mb-3">Get in Touch</h4>
+                <ul class="space-y-2 text-sm">
+                    <li class="flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path></svg>
+                        Kerala, India
+                    </li>
+                    <li class="flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.774a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"></path></svg>
+                        +91 987654321
+                    </li>
+                    <li class="flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path></svg>
+                        ray@gmail.com
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="socials mt-6">
+            <span class="font-bold text-lg mr-3">Follow Us:</span>
+            <a href="\images\logos_facebook.png" class="inline-block mx-2">
+                <i class="fab fa-facebook-f w-7 h-7 rounded-full p-1 hover:bg-green-600 transition-colors duration-200 flex items-center justify-center"></i>
+            </a>
+            <a href="#" class="inline-block mx-2">
+                <i class="fab fa-instagram w-7 h-7 rounded-full p-1 hover:bg-green-600 transition-colors duration-200 flex items-center justify-center"></i>
+            </a>
+            <a href="#" class="inline-block mx-2">
+                <i class="fab fa-youtube w-7 h-7 rounded-full p-1 hover:bg-green-600 transition-colors duration-200 flex items-center justify-center"></i>
+            </a>
+        </div>
+        <p class="mt-8 text-sm text-green-100">&copy; 2025 Ray. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.querySelectorAll('.faq-question').forEach(button => {
+            button.addEventListener('click', () => {
+                const answer = button.nextElementSibling;
+                const icon = button.querySelector('svg');
+                answer.classList.toggle('hidden');
+                icon.classList.toggle('rotate-180'); // Rotate icon for visual feedback
+            });
+        });
+
+        // Main Page Navigation Logic
+        document.addEventListener('DOMContentLoaded', () => {
+            // Custom Modal Logic - Moved inside DOMContentLoaded
+            const customModalBackdrop = document.getElementById('custom-modal-backdrop');
+            const customModalMessage = document.getElementById('custom-modal-message');
+            const customModalCloseBtn = document.getElementById('custom-modal-close-btn');
+            const customModalOkBtn = document.getElementById('custom-modal-ok-btn');
+
+            const showCustomModal = (message) => {
+                customModalMessage.textContent = message;
+                customModalBackdrop.classList.remove('hidden');
+            };
+
+            const hideCustomModal = () => {
+                customModalBackdrop.classList.add('hidden');
+            };
+
+            // Event listeners for the modal close and OK buttons
+            customModalCloseBtn.addEventListener('click', hideCustomModal);
+            customModalOkBtn.addEventListener('click', hideCustomModal);
+            // Also close if clicking outside the modal content (on the backdrop)
+            customModalBackdrop.addEventListener('click', (event) => {
+                if (event.target === customModalBackdrop) {
+                    hideCustomModal();
+                }
+            });
+
+
+            const homePageContent = document.getElementById('home-page-content');
+            const bestSellerPageContent = document.getElementById('best-seller-page-content');
+            const dealOfDayPageContent = document.getElementById('deal-of-day-page-content');
+            const trackOrderPageContent = document.getElementById('track-order-page-content');
+            const shoppingCartPageContent = document.getElementById('shopping-cart-page-content');
+            const paymentPageContent = document.getElementById('payment-page-content');
+            const paymentSuccessfulPageContent = document.getElementById('payment-successful-page-content');
+            const aboutUsPageContent = document.getElementById('about-us-page-content'); // New About Us Page
+
+            // Elements within home-page-content that need to be toggled for product detail view
+            const homeSections = document.querySelectorAll('#home-page-content > section:not(#product-detail-section)');
+            const productDetailSection = document.getElementById('product-detail-section');
+
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            // Function to show a specific main page and hide others
+            const showPage = (pageId) => {
+                // Hide all main page content sections first
+                homePageContent.classList.add('hidden');
+                bestSellerPageContent.classList.add('hidden');
+                dealOfDayPageContent.classList.add('hidden');
+                trackOrderPageContent.classList.add('hidden');
+                shoppingCartPageContent.classList.add('hidden');
+                paymentPageContent.classList.add('hidden');
+                paymentSuccessfulPageContent.classList.add('hidden');
+                aboutUsPageContent.classList.add('hidden'); // Hide About Us page
+
+                // Hide product detail section when navigating to other main pages
+                productDetailSection.classList.add('hidden');
+                homeSections.forEach(section => section.classList.remove('hidden'));
+
+
+                if (pageId === 'home') {
+                    homePageContent.classList.remove('hidden');
+                    resetAndApplyHomeFilters();
+                } else if (pageId === 'best-seller') {
+                    bestSellerPageContent.classList.remove('hidden');
+                } else if (pageId === 'deal-of-day') {
+                    dealOfDayPageContent.classList.remove('hidden');
+                    startDealOfDayTimer();
+                } else if (pageId === 'track-order') {
+                    trackOrderPageContent.classList.remove('hidden');
+                } else if (pageId === 'shopping-cart') {
+                    shoppingCartPageContent.classList.remove('hidden');
+                    updateCartDisplay();
+                } else if (pageId === 'payment') {
+                    paymentPageContent.classList.remove('hidden');
+                    updatePaymentSummary();
+                } else if (pageId === 'payment-success') {
+                    paymentSuccessfulPageContent.classList.remove('hidden');
+                } else if (pageId === 'about-us') { // Show About Us page
+                    aboutUsPageContent.classList.remove('hidden');
+                }
+            };
+
+            // Event listeners for navigation links
+            navLinks.forEach(link => {
+                link.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    const pageToShow = event.target.dataset.page;
+                    showPage(pageToShow);
+                });
+            });
+
+            // Home page specific filtering logic
+            const categoryChips = document.querySelectorAll('.categories .chip');
+            const productCards = document.querySelectorAll('.products .card');
+            const priceFilter = document.getElementById('price-filter');
+            const sizeFilter = document.getElementById('size-filter');
+            const sunLightFilter = document.getElementById('sun-light-filter');
+            const waterLevelFilter = document.getElementById('water-level-filter');
+
+            let activeCategory = 'all'; // Default active category to 'all' for home page
+
+            const applyHomeFilters = () => {
+                const selectedCategory = activeCategory;
+                const selectedPriceRange = priceFilter.value;
+                const selectedSize = sizeFilter.value;
+                const selectedSunLight = sunLightFilter.value;
+                const selectedWaterLevel = waterLevelFilter.value;
+
+                productCards.forEach(card => {
+                    const cardCategory = card.dataset.category;
+                    const cardPrice = parseInt(card.dataset.priceValue);
+                    const cardSize = card.dataset.size;
+                    const cardSunLight = card.dataset.sunLight;
+                    const cardWaterLevel = card.dataset.waterLevel;
+
+                    let matchesCategory = (selectedCategory === 'all' || cardCategory === selectedCategory);
+                    let matchesPrice = true;
+                    if (selectedPriceRange !== 'all') {
+                        const [minPrice, maxPrice] = selectedPriceRange.split('-').map(Number);
+                        matchesPrice = (cardPrice >= minPrice && cardPrice <= maxPrice);
+                    }
+                    let matchesSize = (selectedSize === 'all' || cardSize === selectedSize);
+                    let matchesSunLight = (selectedSunLight === 'all' || cardSunLight === selectedSunLight);
+                    let matchesWaterLevel = (selectedWaterLevel === 'all' || cardWaterLevel === selectedWaterLevel);
+
+                    if (matchesCategory && matchesPrice && matchesSize && matchesSunLight && matchesWaterLevel) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            };
+
+            const resetAndApplyHomeFilters = () => {
+                // Reset dropdown filters to 'all'
+                priceFilter.value = 'all';
+                sizeFilter.value = 'all';
+                sunLightFilter.value = 'all';
+                waterLevelFilter.value = 'all';
+
+                // Reset active category chip to default ('Show All')
+                categoryChips.forEach(c => {
+                    c.classList.remove('active', 'bg-[#4f872d]', 'text-white');
+                    c.classList.add('bg-gray-200', 'text-gray-700');
+                });
+                const defaultChip = document.querySelector('.categories .chip[data-category="all"]');
+                if (defaultChip) {
+                    defaultChip.classList.add('active', 'bg-[#4f872d]', 'text-white');
+                    defaultChip.classList.remove('bg-gray-200', 'text-gray-700');
+                    activeCategory = 'all';
+                }
+
+                applyHomeFilters();
+            };
+
+            // Event listeners for category chips (delegated to applyHomeFilters)
+            categoryChips.forEach(chip => {
+                chip.addEventListener('click', () => {
+                    categoryChips.forEach(c => {
+                        c.classList.remove('active', 'bg-[#4f872d]', 'text-white');
+                        c.classList.add('bg-gray-200', 'text-gray-700');
+                    });
+                    chip.classList.add('active', 'bg-[#4f872d]', 'text-white');
+                    chip.classList.remove('bg-gray-200', 'text-gray-700');
+                    activeCategory = chip.dataset.category;
+                    applyHomeFilters();
+                });
+            });
+
+            // Event listeners for dropdown filters (delegated to applyHomeFilters)
+            priceFilter.addEventListener('change', applyHomeFilters);
+            sizeFilter.addEventListener('change', applyHomeFilters);
+            sunLightFilter.addEventListener('change', applyHomeFilters);
+            waterLevelFilter.addEventListener('change', applyHomeFilters);
+
+            // Deal of the Day Timer Logic
+            const dealHourSpan = document.getElementById('deal-hour');
+            const dealMinSpan = document.getElementById('deal-min');
+            const dealSecSpan = document.getElementById('deal-sec');
+
+            let countdownInterval;
+
+            function startDealOfDayTimer() {
+                // Clear any existing interval to prevent multiple timers running
+                if (countdownInterval) {
+                    clearInterval(countdownInterval);
+                }
+
+                // Set the end time for the deal (e.g., 24 hours from now)
+                // For demonstration, let's set it to end at the next full hour + 15 minutes
+                const now = new Date();
+                const endTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours() + 1, 15, 0); // Next hour + 15 mins
+
+                function updateCountdown() {
+                    const currentTime = new Date().getTime();
+                    const timeLeft = endTime - currentTime;
+
+                    if (timeLeft < 0) {
+                        clearInterval(countdownInterval);
+                        dealHourSpan.textContent = '00';
+                        dealMinSpan.textContent = '00';
+                        dealSecSpan.textContent = '00';
+                        // Optionally, display "Deal Expired" or similar
+                        return;
+                    }
+
+                    const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+                    dealHourSpan.textContent = String(hours).padStart(2, '0');
+                    dealMinSpan.textContent = String(minutes).padStart(2, '0');
+                    dealSecSpan.textContent = String(seconds).padStart(2, '0');
+                }
+
+                // Update the countdown every second
+                countdownInterval = setInterval(updateCountdown, 1000);
+                updateCountdown(); // Initial call to display immediately
+            }
+
+            // Track Order toggle logic
+            const orderIdBtn = document.getElementById('order-id-btn');
+            const invoiceIdBtn = document.getElementById('invoice-id-btn');
+            const orderRefNoInput = document.getElementById('order-ref-no');
+            const billingContactInput = document.getElementById('billing-contact');
+
+            orderIdBtn.addEventListener('click', () => {
+                orderIdBtn.classList.add('active');
+                invoiceIdBtn.classList.remove('active');
+                orderRefNoInput.placeholder = 'Order ref.. No';
+            });
+
+            invoiceIdBtn.addEventListener('click', () => {
+                invoiceIdBtn.classList.add('active');
+                orderIdBtn.classList.remove('active');
+                orderRefNoInput.placeholder = 'Invoice ref.. No'; // Changed placeholder for clarity
+            });
+
+            // Shopping Cart Logic
+            const cartIcon = document.getElementById('cart-icon');
+            const closeCartPageBtn = document.getElementById('close-cart-page-btn');
+            const cartItemsList = document.getElementById('cart-items-list');
+            const cartTotalSpan = document.getElementById('cart-total');
+            const cartCountSpan = document.getElementById('cart-count');
+            const cartItemCountModal = document.getElementById('cart-item-count-modal');
+            const emptyCartState = document.getElementById('empty-cart-state'); // New element
+            const cartSummary = document.getElementById('cart-summary'); // New element
+            const continueBrowsingBtn = document.getElementById('continue-browsing-btn'); // New element
+            const proceedToCheckoutBtn = document.getElementById('proceed-to-checkout-btn');
+
+            let cart = []; // Array to store cart items: [{ name, price, quantity, img }]
+            const DISCOUNT_PERCENTAGE = 0.12; // 12% discount for orders above Rs.1999
+            const DISCOUNT_THRESHOLD = 1999;
+
+            const updateCartDisplay = () => {
+                cartItemsList.innerHTML = ''; // Clear current items
+                let subtotal = 0;
+                let itemCount = 0;
+
+                if (cart.length === 0) {
+                    emptyCartState.classList.remove('hidden');
+                    cartItemsList.classList.add('hidden'); // Hide the list of items
+                    cartSummary.classList.add('hidden'); // Hide the total and checkout button
+                } else {
+                    emptyCartState.classList.add('hidden');
+                    cartItemsList.classList.remove('hidden');
+                    cartSummary.classList.remove('hidden');
+
+                    cart.forEach((item, index) => {
+                        const itemElement = document.createElement('div');
+                        itemElement.classList.add('flex', 'items-center', 'py-3', 'border-b', 'border-gray-100', 'last:border-b-0');
+                        itemElement.innerHTML = `
+                            <img src="${item.img}" alt="${item.name}" class="w-16 h-16 object-cover rounded-md mr-4">
+                            <div class="flex-1">
+                                <h4 class="font-semibold text-gray-900">${item.name}</h4>
+                                <p class="text-sm text-gray-700">Rs.${item.price}</p>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <button class="quantity-btn bg-gray-200 text-gray-700 rounded-full w-6 h-6 flex items-center justify-center text-sm" data-index="${index}" data-action="decrease">-</button>
+                                <span class="font-medium text-gray-800">${item.quantity}</span>
+                                <button class="quantity-btn bg-gray-200 text-gray-700 rounded-full w-6 h-6 flex items-center justify-center text-sm" data-index="${index}" data-action="increase">+</button>
+                                <button class="remove-from-cart-btn text-red-500 hover:text-red-700 text-xl ml-2" data-index="${index}">&times;</button>
+                            </div>
+                            <span class="font-semibold text-gray-900 ml-4">Rs.${item.price * item.quantity}</span>
+                        `;
+                        cartItemsList.appendChild(itemElement);
+                        subtotal += item.price * item.quantity;
+                        itemCount += item.quantity;
+                    });
+                }
+
+                let total = subtotal;
+                let savedAmount = 0;
+
+                if (subtotal > DISCOUNT_THRESHOLD) {
+                    savedAmount = subtotal * DISCOUNT_PERCENTAGE;
+                    total = subtotal - savedAmount;
+                }
+
+                cartTotalSpan.textContent = `Rs.${total.toFixed(2)}`;
+                // The savedAmountSpan is removed from HTML for empty cart, so this line is commented out.
+                // savedAmountSpan.textContent = savedAmount.toFixed(2);
+                cartCountSpan.textContent = itemCount;
+                cartItemCountModal.textContent = itemCount;
+
+                if (itemCount > 0) {
+                    cartCountSpan.classList.remove('hidden');
+                } else {
+                    cartCountSpan.classList.add('hidden');
+                }
+
+                // Update payment page summary when cart changes
+                updatePaymentSummary();
+            };
+
+            const addToCart = (productName, price, img) => {
+                const existingItemIndex = cart.findIndex(item => item.name === productName);
+
+                if (existingItemIndex > -1) {
+                    cart[existingItemIndex].quantity++;
+                } else {
+                    cart.push({ name: productName, price: price, quantity: 1, img: img });
+                }
+                updateCartDisplay();
+                showCustomModal(`${productName} added to basket!`); // Replaced alert
+            };
+
+            const updateCartItemQuantity = (index, action) => {
+                if (action === 'increase') {
+                    cart[index].quantity++;
+                } else if (action === 'decrease') {
+                    cart[index].quantity--;
+                    if (cart[index].quantity <= 0) {
+                        cart.splice(index, 1); // Remove item if quantity is 0 or less
+                    }
+                }
+                updateCartDisplay();
+            };
+
+            const removeFromCart = (index) => {
+                cart.splice(index, 1);
+                updateCartDisplay();
+            };
+
+            // Event delegation for quantity controls and remove buttons inside the cart
+            cartItemsList.addEventListener('click', (event) => {
+                if (event.target.classList.contains('quantity-btn')) {
+                    const index = parseInt(event.target.dataset.index);
+                    const action = event.target.dataset.action;
+                    updateCartItemQuantity(index, action);
+                } else if (event.target.classList.contains('remove-from-cart-btn')) {
+                    const index = parseInt(event.target.dataset.index);
+                    removeFromCart(index);
+                }
+            });
+
+
+            // Toggle cart visibility (now for the page)
+            cartIcon.addEventListener('click', () => {
+                showPage('shopping-cart');
+            });
+
+            closeCartPageBtn.addEventListener('click', () => {
+                showPage('home'); // Go back to home or previous page
+            });
+
+            // Event listener for the new "Continue Browsing" button
+            continueBrowsingBtn.addEventListener('click', () => {
+                showPage('home'); // Go back to home page
+            });
+
+
+            // Payment Page Logic
+            const paymentDueAmountSpan = document.getElementById('payment-due-amount');
+            const paymentOptionBtns = document.querySelectorAll('.payment-option-btn');
+            const makePaymentBtn = document.getElementById('make-payment-btn');
+            const closePaymentBtn = document.getElementById('close-payment-btn');
+            const closePaymentSuccessBtn = document.getElementById('close-payment-success-btn');
+
+            const updatePaymentSummary = () => {
+                let subtotal = 0;
+                cart.forEach(item => {
+                    subtotal += item.price * item.quantity;
+                });
+
+                let total = subtotal;
+                if (subtotal > DISCOUNT_THRESHOLD) {
+                    total = subtotal - (subtotal * DISCOUNT_PERCENTAGE);
+                }
+                paymentDueAmountSpan.textContent = `Rs.${total.toFixed(2)}`;
+                document.querySelectorAll('.upi-amount').forEach(span => span.textContent = total.toFixed(2));
+                document.querySelectorAll('.gpay-amount').forEach(span => span.textContent = total.toFixed(2));
+            };
+
+            paymentOptionBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    paymentOptionBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                });
+            });
+
+            proceedToCheckoutBtn.addEventListener('click', () => {
+                if (cart.length === 0) {
+                    showCustomModal("Your cart is empty. Please add items before proceeding to checkout."); // Replaced alert
+                    return;
+                }
+                showPage('payment');
+            });
+
+            makePaymentBtn.addEventListener('click', () => {
+                // In a real app, you'd integrate with a payment gateway here.
+                // For this example, we'll just simulate success.
+                showPage('payment-success');
+                cart = []; // Clear cart after successful payment
+                updateCartDisplay();
+            });
+
+            closePaymentBtn.addEventListener('click', () => {
+                showPage('home'); // Go back to home or previous page
+            });
+
+            closePaymentSuccessBtn.addEventListener('click', () => {
+                showPage('home'); // Go back to home after successful payment
+            });
+
+            // Product Detail Page Logic (now a section within home-page-content)
+            const productDetailMainImg = document.getElementById('product-detail-main-img');
+            const productDetailName = document.getElementById('product-detail-name');
+            const productDetailPrice = document.getElementById('product-detail-price');
+            const productDetailHighlights = document.getElementById('product-detail-highlights');
+            const productDetailThumbnails = document.getElementById('product-detail-thumbnails');
+            const productDetailAddToCartBtn = document.getElementById('product-detail-add-to-cart-btn');
+            const backToProductsBtn = document.getElementById('back-to-products-btn');
+
+            let currentProductData = {}; // To store data of the currently viewed product
+
+            const showProductDetail = (productData) => {
+                // Hide all other home sections
+                homeSections.forEach(section => section.classList.add('hidden'));
+                productDetailSection.classList.remove('hidden');
+
+                // Populate product detail section with data
+                currentProductData = productData; // Store for add to cart
+                productDetailMainImg.src = productData.img;
+                productDetailMainImg.alt = productData.name;
+                productDetailName.textContent = productData.name;
+                productDetailPrice.textContent = `Rs.${productData.fullPrice}`;
+
+                // Populate highlights (assuming description is a single string for now)
+                productDetailHighlights.innerHTML = '';
+                // Split description by sentences for bullet points, or by specific delimiters if available in real data
+                const highlights = productData.description.split('. ').filter(s => s.trim() !== '');
+                highlights.forEach(highlight => {
+                    const li = document.createElement('li');
+                    li.textContent = highlight.trim() + (highlight.endsWith('.') ? '' : '.'); // Add period if missing
+                    productDetailHighlights.appendChild(li);
+                });
+
+                // Populate thumbnails
+                productDetailThumbnails.innerHTML = '';
+                const thumbnails = [
+                    productData.img, // Main image as first thumbnail
+                    productData.thumbnail1,
+                    productData.thumbnail2,
+                    productData.thumbnail3
+                ].filter(url => url); // Filter out undefined/null thumbnails
+
+                thumbnails.forEach((thumbUrl, index) => {
+                    const thumbImg = document.createElement('img');
+                    thumbImg.src = thumbUrl;
+                    thumbImg.alt = `${productData.name} thumbnail ${index + 1}`;
+                    thumbImg.classList.add('w-20', 'h-20', 'object-cover', 'rounded-md', 'product-detail-thumbnail');
+                    if (index === 0) {
+                        thumbImg.classList.add('active'); // First thumbnail is active by default
+                    }
+                    thumbImg.addEventListener('click', () => {
+                        productDetailMainImg.src = thumbUrl;
+                        // Remove active class from all and add to clicked one
+                        document.querySelectorAll('.product-detail-thumbnail').forEach(t => t.classList.remove('active'));
+                        thumbImg.classList.add('active');
+                    });
+                    productDetailThumbnails.appendChild(thumbImg);
+                });
+
+                // Set data for add to cart button
+                productDetailAddToCartBtn.dataset.productName = productData.name;
+                productDetailAddToCartBtn.dataset.price = productData.fullPrice;
+                productDetailAddToCartBtn.dataset.img = productData.img;
+            };
+
+            // Event listener for "View Product" buttons on product cards
+            document.querySelectorAll('.view-product-btn').forEach(button => {
+                button.addEventListener('click', (event) => {
+                    const card = event.target.closest('.card');
+                    const productData = {
+                        name: card.dataset.productName,
+                        img: card.dataset.img,
+                        fullPrice: parseFloat(card.dataset.fullPrice),
+                        description: card.dataset.description,
+                        thumbnail1: card.dataset.thumbnail1,
+                        thumbnail2: card.dataset.thumbnail2,
+                        thumbnail3: card.dataset.thumbnail3
+                    };
+                    showProductDetail(productData);
+                });
+            });
+
+            // Event listener for "Add to Basket" button on product detail page
+            productDetailAddToCartBtn.addEventListener('click', (event) => {
+                const productName = event.target.dataset.productName;
+                const productPrice = parseFloat(event.target.dataset.price);
+                const productImg = event.target.dataset.img;
+                addToCart(productName, productPrice, productImg);
+            });
+
+            // Event listener for "Add to Basket" buttons on Best Seller and Deal of the Day pages
+            document.querySelectorAll('.add-to-basket-btn').forEach(button => {
+                button.addEventListener('click', (event) => {
+                    const productName = event.target.dataset.productName;
+                    const productPrice = parseFloat(event.target.dataset.price);
+                    const productImg = event.target.dataset.img;
+                    addToCart(productName, productPrice, productImg);
+                });
+            });
+
+            // Event listener for "Back to Products" button
+            backToProductsBtn.addEventListener('click', () => {
+                productDetailSection.classList.add('hidden');
+                homeSections.forEach(section => section.classList.remove('hidden'));
+                // Re-apply filters to ensure correct product list display
+                applyHomeFilters();
+            });
+
+
+            // Initial display: Show home page by default
+            showPage('home');
+            updateCartDisplay(); // Initialize cart display
+        });
+    </script>
+
+</body>
+</html>
